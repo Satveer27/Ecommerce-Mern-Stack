@@ -1,4 +1,5 @@
 //run the application, all other logic go app
+//This app uses MVC structure
 import http from 'http';
 import app from './app/app.js'
 

@@ -2,6 +2,10 @@
 import asyncHandler from 'express-async-handler';
 import User from "../model/User.js";
 import bcrypt from "bcryptjs";
+import generateToken from '../utils/generateToken.js';
+import { getTokenFromHeader } from '../utils/getTokenFromHeader.js';
+import { verifyToken } from '../utils/verifyToken.js';
+
 
 // @description Register users
 // @route Post /api/v1/users/register
@@ -48,11 +52,23 @@ export const loginUserController = asyncHandler(async(req, res)=>{
         res.json({
             status:'success',
             msg:'Success login',
-            userFound
+            userFound,
+            token: generateToken(userFound.id)
         });
     }
     else{
         throw new Error('Invalid login credentials');
     }
     
+});
+
+// @description GET user profile
+// @route GET /api/v1/users/profile
+// @access Private
+export const getUserProfileController = asyncHandler(async(req,res)=>{{
+    console.log(req);
+    res.json({
+        msg: 'Welcome to pfp'
+    })
+}
 });

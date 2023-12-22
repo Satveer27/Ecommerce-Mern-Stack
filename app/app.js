@@ -12,12 +12,11 @@ dbConnect();
 const app = express();
 
 //pass incoming data
-app.use(express.json())
-
+app.use(express.json());
 
 //routes
 //mounting entire route inside app, according to pattern will redirect
-app.use('/', userRoutes);
+app.use('/api/v1/users/', userRoutes);
 
 //error middleware
 app.use(notFound);

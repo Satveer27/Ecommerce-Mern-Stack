@@ -16,7 +16,7 @@ export const isLoggedIn = (req, res, next) =>{
     }
     else{
         //saving user to userAuthId in request object
-        //More flexibility to check for the login user and access other sites
+        //More flexibility to check for the login user on the route itself
         req.userAuthId = decodedUser?.id;
         next();
     }

@@ -54,6 +54,10 @@ const UserSchema = new Schema({
             type:String
         },
     },
+    profileImage:{
+        type:String,
+        default: "../utils/images"
+    }
     },{
     timestamps: true
     //Date user is created and updated

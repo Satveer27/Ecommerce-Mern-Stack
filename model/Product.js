@@ -16,7 +16,7 @@ const ProductSchema = new Schema({
         required: true,
     },
     category:{
-        type:String,
+        type: String,
         ref: "Category", 
         required: true,
     },
@@ -51,7 +51,6 @@ const ProductSchema = new Schema({
     },
     totalSold:{
         type:Number,
-        required: true,
         default:0,
     },
     },{

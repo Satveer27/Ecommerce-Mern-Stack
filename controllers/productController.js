@@ -2,7 +2,7 @@ import Product from "../model/Product.js";
 import asyncHandler from 'express-async-handler';
 
 // @description Create new product
-// @route POST /api/product
+// @route POST /api/v1/products/createProduct
 // @access Private/Admin
 
 export const createProductController = asyncHandler(async(req,res)=>{
@@ -34,4 +34,17 @@ export const createProductController = asyncHandler(async(req,res)=>{
 
     }
 
+});
+
+// @description Get all products
+// @route GET /api/products/allProducts
+// @access Public
+
+export const fetchProductController = asyncHandler(async(req,res)=>{
+    const product = await Product.find();
+    res.status(200).json({
+        status:"Success",
+        msg:"Products:",
+        data: product,
+    })
 });

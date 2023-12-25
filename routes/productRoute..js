@@ -1,11 +1,11 @@
 import express from 'express';
-import { createProductController } from '../controllers/productController.js';
+import { createProductController, fetchProductController } from '../controllers/productController.js';
 import { isLoggedIn } from '../middlewares/isLoggedIn.js';
 
 
 
 const productRoutes = express.Router();
-productRoutes.post('/', isLoggedIn,createProductController);
-
+productRoutes.post('/createProduct', isLoggedIn,createProductController);
+productRoutes.get('/allProducts', fetchProductController);
 
 export default productRoutes;

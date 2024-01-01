@@ -59,7 +59,7 @@ const ProductSchema = new Schema({
     toJSON:{ virtuals:true },
     }
 );
-//Virtuals - just a temporary field in the database we will add
+//Virtuals - just adding a field to the database which will change as more data added to review.
 //total number of ratings
 ProductSchema.virtual('totalReviews').get(function(){
     //instance of this product

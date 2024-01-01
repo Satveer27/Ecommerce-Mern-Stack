@@ -44,12 +44,34 @@ export const fetchProductController = asyncHandler(async(req,res)=>{
 
     let productQuery = Product.find();
 
-     //search by name, name can come from the payload
+    //search by name, name can come from the payload
     if(req.query.name){
-        productQuery = Product.find({
+        productQuery = productQuery.find({
             name:{$regex:req.query.name, $options:"i"},
         })
     }
+
+    //search by brand, name can come from the payload
+    if(req.query.brand){
+        productQuery = productQuery.find({
+            brand:{$regex:req.query.brand, $options:"i"},
+        })
+    }
+
+    //search by category, name can come from the payload
+    if(req.query.category){
+        productQuery = productQuery.find({
+            category:{$regex:req.query.category, $options:"i"},
+        })
+    }
+
+     //search by colours, name can come from the payload
+     if(req.query.colour){
+        productQuery = productQuery.find({
+            color:{$regex:req.query.colour, $options:"i"},
+        })
+    }
+
     //await is to pause the async method to wait for query to finish
     const product = await productQuery;
   

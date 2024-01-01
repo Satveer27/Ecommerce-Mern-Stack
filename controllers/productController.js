@@ -38,38 +38,46 @@ export const createProductController = asyncHandler(async(req,res)=>{
 
 // @description Get all products
 // @route GET /api/products/allProducts
-// @access Public
+// @access 
+//Filtering is also done in this section for users to filter and get products
 
 export const fetchProductController = asyncHandler(async(req,res)=>{
 
     let productQuery = Product.find();
 
-    //search by name, name can come from the payload
+    //filter by name, name can come from the payload
     if(req.query.name){
         productQuery = productQuery.find({
             name:{$regex:req.query.name, $options:"i"},
         })
     }
 
-    //search by brand, name can come from the payload
+    //filter by brand, name can come from the payload
     if(req.query.brand){
         productQuery = productQuery.find({
             brand:{$regex:req.query.brand, $options:"i"},
         })
     }
 
-    //search by category, name can come from the payload
+    //filter by category, name can come from the payload
     if(req.query.category){
         productQuery = productQuery.find({
             category:{$regex:req.query.category, $options:"i"},
         })
     }
 
-     //search by colours, name can come from the payload
-     if(req.query.colour){
+    //filter by colours, name can come from the payload
+    if(req.query.colour){
         productQuery = productQuery.find({
             color:{$regex:req.query.colour, $options:"i"},
         })
+    }
+
+    //filter by price range
+    if(req.query.price){
+        const priceRange = req.query.price.split("-");
+        //gte and lte of query. Gte greater than or equal. Lte lesser than or equal
+        productQuery = productQuery.find({ price:{$gte:priceRange[0], $lte:priceRange[1]} });
     }
 
     //await is to pause the async method to wait for query to finish

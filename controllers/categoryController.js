@@ -13,7 +13,7 @@ export const createCategoryCtrl = asyncHandler(async(req,res)=>{
         throw new Error("Category exist already");
     }
     const newCategory = await Category.create({
-        name,
+        name: name.toLowerCase(),
         user: req.userAuthId,
         image,
     });

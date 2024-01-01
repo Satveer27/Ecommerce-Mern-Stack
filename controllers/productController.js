@@ -80,11 +80,48 @@ export const fetchProductController = asyncHandler(async(req,res)=>{
         productQuery = productQuery.find({ price:{$gte:priceRange[0], $lte:priceRange[1]} });
     }
 
+    //pagination
+    //page(if user provide page, meaning what page are they at)
+    const page = parseInt(req.query.page) ? parseInt(req.query.page) :1;
+
+    //limit(limit of total product)
+    const limit = parseInt(req.query.limit) ? parseInt(req.query.limit) :10;
+
+    //startIdx(what product we start to display on page)
+    const startIndex = (page-1)*limit;
+
+    //endIdx
+    const endIndex = page * limit;
+
+    //total
+    const total = await Product.countDocuments();
+
+    //Query a number of product depending on the amount needed for the particular page.
+    productQuery = productQuery.skip(startIndex).limit(limit);
+
+    //pagination result
+    const pagination = {}
+    if(endIndex<total){
+        pagination.next = {
+            page: page + 1,
+            limit,
+        };
+    }
+    if(startIndex>0){
+        pagination.before = {
+            page: page - 1,
+            limit,
+        }
+    }
+
     //await is to pause the async method to wait for query to finish
     const product = await productQuery;
   
     res.status(200).json({
         status:"Success",
+        total: total,
+        results:product.length,
+        pagination,
         msg:"Products:",
         data: product,
     })

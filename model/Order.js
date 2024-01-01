@@ -27,10 +27,36 @@ const OrderSchema = new Schema({
         require:true,
         default: randomText + randomNumber
     },
+    //for stripe payment
     paymentStatus:{
         type:String,
         required:true,
         default:"Not paid"
-    }
+    },
+    paymentMethod:{
+        type:String,
+        required:true,
+        default:"Not specified",
+    },
+    currency:{
+        type:String,
+        default:"Not specified",
+    },
+    //For admin
+    status:{
+        type:String,
+        default:"Pending",
+        enum:['pending', 'processing', 'shipped', 'delivered'],
+    },
+    deliveredAt:{
+        type:Date,
+    },
+    totalPrice:{
+        type:Number,
+        default:0.0,
+    },
 
-})
+},{timestamps:true});
+
+const Order = mongoose.model('Order', OrderSchema);
+export default Order;

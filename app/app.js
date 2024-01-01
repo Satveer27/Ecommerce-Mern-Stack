@@ -6,6 +6,7 @@ import { globalErrorHandler , notFound} from '../middlewares/globalErrorHandler.
 import productRoutes from '../routes/productRoute.js';
 import categoryRouter from '../routes/categoryRoute.js';
 import brandRoute from '../routes/brandRoute.js';
+import colorRouter from '../routes/colorRoute.js';
 
 //Have access to variable in env file
 dotenv.config();
@@ -23,6 +24,7 @@ app.use('/api/v1/users/', userRoutes);
 app.use('/api/v1/products/', productRoutes);
 app.use('/api/v1/category/', categoryRouter);
 app.use('/api/v1/brand/', brandRoute);
+app.use('/api/v1/color/', colorRouter);
 
 //error middleware
 app.use(notFound);

@@ -1,13 +1,14 @@
 import Category from "../model/Category.js";
 import Product from "../model/Product.js";
 import asyncHandler from 'express-async-handler';
+import Brand from "../model/Brand.js";
 
 // @description Create new product
 // @route       POST /api/v1/products/createProduct
 // @access      Private/Admin
 
 export const createProductController = asyncHandler(async(req,res)=>{
-    const {name, description, brand, category,color, user, images, price, totalQuantity, } = req.body;
+    const {name, description, brand, category,color, images, price, totalQuantity, } = req.body;
 
     //product exists
     const productExists = await Product.findOne({ name });
@@ -21,6 +22,14 @@ export const createProductController = asyncHandler(async(req,res)=>{
     });
     if(!categoryFound){
         throw new Error("Category not found");
+    }
+
+    //find the brand
+    const brandFound = await Brand.findOne({
+        name: brand,
+    });
+    if(!brandFound){
+        throw new Error("Brand not found");
     }
 
     //create product
@@ -39,6 +48,12 @@ export const createProductController = asyncHandler(async(req,res)=>{
     categoryFound.products.push(createProduct._id)
     //resave(Since made changes to category model itself)
     await categoryFound.save();
+
+    //push the product into brand
+    brandFound.products.push(createProduct._id)
+    //resave(Since made changes to category model itself)
+    await brandFound.save();
+
     //send success message
     res.status(200).json({
             status: 'Success',

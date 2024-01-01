@@ -20,11 +20,10 @@ const ProductSchema = new Schema({
         ref: "Category", 
         required: true,
     },
-    color:{
-        type: [String],
-        enum: ["Black", "White", "Grey"], 
+    color:[{
+        type: String,
         required: true,
-    },
+    }],
     user:{
         type:mongoose.Schema.Types.ObjectId,
         required: true,

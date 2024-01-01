@@ -2,8 +2,8 @@ import Product from "../model/Product.js";
 import asyncHandler from 'express-async-handler';
 
 // @description Create new product
-// @route POST /api/v1/products/createProduct
-// @access Private/Admin
+// @route       POST /api/v1/products/createProduct
+// @access      Private/Admin
 
 export const createProductController = asyncHandler(async(req,res)=>{
     const {name, description, brand, category,color, user, images, price, totalQuantity, } = req.body;
@@ -37,8 +37,8 @@ export const createProductController = asyncHandler(async(req,res)=>{
 });
 
 // @description Get all products
-// @route GET /api/products/allProducts
-// @access 
+// @route       GET /api/products/allProducts
+// @access      Public
 //Filtering is also done in this section for users to filter and get products
 
 export const fetchProductController = asyncHandler(async(req,res)=>{
@@ -127,3 +127,18 @@ export const fetchProductController = asyncHandler(async(req,res)=>{
     })
 });
 
+// @description Get a single product
+// @route       GET /api/products/:id
+// @access      Public
+
+export const getSingleProductController = asyncHandler(async(req, res)=>{
+    const product = await Product.findById(req.params.id);
+    if(!product){
+        throw new Error('Product not found')
+    }
+    res.json({
+        status:"success",
+        message: "product fetched",
+        product,
+    });
+})

@@ -142,3 +142,32 @@ export const getSingleProductController = asyncHandler(async(req, res)=>{
         product,
     });
 })
+
+// @description update a product
+// @route       PUT /api/products/:id/update
+// @access      Private/Admin
+
+export const updateProductController = asyncHandler(async(req, res)=>{
+    const {name, description, brand, category,color, user, images, price, totalQuantity, } = req.body;
+
+    //update
+    const product = await Product.findByIdAndUpdate(req.params.id,{
+            name,
+            description,
+            brand, 
+            category,
+            color,
+            user,
+            images,
+            price,
+            totalQuantity,
+    },{
+        new: true,
+    });
+
+    res.json({
+        status:"success",
+        message: "product updated",
+        product,
+    });
+})

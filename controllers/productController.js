@@ -41,10 +41,22 @@ export const createProductController = asyncHandler(async(req,res)=>{
 // @access Public
 
 export const fetchProductController = asyncHandler(async(req,res)=>{
-    const product = await Product.find();
+
+    let productQuery = Product.find();
+
+     //search by name, name can come from the payload
+    if(req.query.name){
+        productQuery = Product.find({
+            name:{$regex:req.query.name, $options:"i"},
+        })
+    }
+    //await is to pause the async method to wait for query to finish
+    const product = await productQuery;
+  
     res.status(200).json({
         status:"Success",
         msg:"Products:",
         data: product,
     })
 });
+

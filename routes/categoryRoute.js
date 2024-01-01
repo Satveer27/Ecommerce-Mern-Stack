@@ -6,6 +6,6 @@ const categoryRouter = express.Router();
 categoryRouter.post('/createCategory', isLoggedIn, createCategoryCtrl);
 categoryRouter.get('/allCategory', getAllCategoryController);
 categoryRouter.get('/:id', getSingleCategoryController);
-categoryRouter.delete('/:id/deleteCategory', deleteCategoryController);
-categoryRouter.put('/:id/updateCategory', updateCategoryController);
+categoryRouter.delete('/:id/deleteCategory', isLoggedIn, deleteCategoryController);
+categoryRouter.put('/:id/updateCategory', isLoggedIn, updateCategoryController);
 export default categoryRouter;

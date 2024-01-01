@@ -25,7 +25,6 @@ export const createCategoryCtrl = asyncHandler(async(req,res)=>{
     })
 })
 
-
 //@description  Get all category
 //@route        GET /api/v1/categories
 //@access       Public
@@ -51,7 +50,6 @@ export const getSingleCategoryController = asyncHandler(async(req,res)=>{
         categories,
     })
 })
-
 
 // @description update a category
 // @route       PUT /api/category/:id/updateCategory

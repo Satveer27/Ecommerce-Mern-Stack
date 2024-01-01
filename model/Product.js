@@ -59,6 +59,24 @@ const ProductSchema = new Schema({
     toJSON:{ virtuals:true },
     }
 );
+//Virtuals - just a temporary field in the database we will add
+//total number of ratings
+ProductSchema.virtual('totalReviews').get(function(){
+    //instance of this product
+    const product = this;
+    return product?.reviews?.length;
+})
+
+//find average rating
+ProductSchema.virtual("averageRating").get(function(){
+    let totalRating = 0;
+    const product = this;
+    product?.reviews?.forEach((review)=>{
+        totalRating += review?.rating
+    });
+    const averageRating = Number(totalRating / product?.reviews?.length).toFixed(1);
+    return averageRating;
+});
 
 //Compile schema to model
 const Product = mongoose.model('Product', ProductSchema);

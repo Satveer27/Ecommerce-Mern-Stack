@@ -11,16 +11,16 @@ const ReviewSchema = new Schema({
     },
     products:{
         type: mongoose.Schema.Types.ObjectId,
-        ref:"Products",
+        ref:"Product",
         //error display message custome one
         required: [true, "Review must belong to a product"],
     },
     message:{
-        string: true,
+        type:String,
         required: [true, "Please add a message"],
     },
     rating:{
-        string,
+        type: Number,
         required: [true, "Please add a rating between 1 and 5"],
         min: 1,
         max: 5,

@@ -141,7 +141,7 @@ export const fetchProductController = asyncHandler(async(req,res)=>{
     }
 
     //await is to pause the async method to wait for query to finish
-    const product = await productQuery;
+    const product = await productQuery.populate("reviews");
   
     res.status(200).json({
         status:"Success",
@@ -158,7 +158,8 @@ export const fetchProductController = asyncHandler(async(req,res)=>{
 // @access      Public
 
 export const getSingleProductController = asyncHandler(async(req, res)=>{
-    const product = await Product.findById(req.params.id);
+    //populate basically gets the object itself instead of the id
+    const product = await Product.findById(req.params.id).populate("reviews");
     if(!product){
         throw new Error('Product not found')
     }

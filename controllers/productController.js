@@ -171,3 +171,14 @@ export const updateProductController = asyncHandler(async(req, res)=>{
         product,
     });
 })
+
+// @description delete a product
+// @route       DELETE /api/products/:id/delete
+// @access      Private/Admin
+export const deleteProductController = asyncHandler(async(req, res)=>{
+    const product = await Product.findByIdAndDelete(req.params.id);
+    res.json({
+        status:"success",
+        message: "product deleted",
+    });
+})

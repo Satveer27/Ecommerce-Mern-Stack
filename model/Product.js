@@ -60,6 +60,14 @@ const ProductSchema = new Schema({
     }
 );
 //Virtuals - just adding a field to the database which will change as more data added to review.
+
+//qty left
+ProductSchema.virtual('qtyLeft').get(function(){
+    const product = this
+    return product.totalQuantity - product.totalSold;
+})
+
+
 //total number of ratings
 ProductSchema.virtual('totalReviews').get(function(){
     //instance of this product

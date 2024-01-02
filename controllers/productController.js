@@ -18,7 +18,7 @@ export const createProductController = asyncHandler(async(req,res)=>{
 
     //find the category
     const categoryFound = await Category.findOne({
-        name: category,
+        name: category?.toLowerCase(),
     });
     if(!categoryFound){
         throw new Error("Category not found");
@@ -26,7 +26,7 @@ export const createProductController = asyncHandler(async(req,res)=>{
 
     //find the brand
     const brandFound = await Brand.findOne({
-        name: brand,
+        name: brand?.toLowerCase(),
     });
     if(!brandFound){
         throw new Error("Brand not found");

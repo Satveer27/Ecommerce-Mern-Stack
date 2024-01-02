@@ -54,6 +54,10 @@ const UserSchema = new Schema({
             type:String
         },
     },
+    hasShippingAddress: {
+        type: Boolean,
+        default: false,
+    },
     profileImage:{
         type:String,
         default: "../utils/images"

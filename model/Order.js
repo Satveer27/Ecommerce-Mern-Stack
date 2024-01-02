@@ -45,7 +45,7 @@ const OrderSchema = new Schema({
     //For admin
     status:{
         type:String,
-        default:"Pending",
+        default:"pending",
         enum:['pending', 'processing', 'shipped', 'delivered'],
     },
     deliveredAt:{

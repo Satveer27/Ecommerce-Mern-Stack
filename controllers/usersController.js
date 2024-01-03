@@ -65,9 +65,12 @@ export const loginUserController = asyncHandler(async(req, res)=>{
 // @route GET /api/v1/users/profile
 // @access Private
 export const getUserProfileController = asyncHandler(async(req,res)=>{{
-    console.log(req);
+    //find user
+    const user = await User.findById(req.userAuthId).populate("orders");
     res.json({
-        msg: 'Welcome to pfp'
+        status: "success",
+        message:"user profile",
+        user,
     })
 }
 });

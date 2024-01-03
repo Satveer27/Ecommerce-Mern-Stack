@@ -118,3 +118,22 @@ export const getSingleOrderController = asyncHandler(async(req,res)=>{
         order,
     })
 })
+
+//@desc   update the order status 
+//@route  GET /api/v1/order/update/:id
+//@access private/Admin
+
+export const updateOrderController = asyncHandler(async(req,res)=>{
+    //find order 
+    const id = req.params.id;
+    const orderUpdated = await Order.findByIdAndUpdate(id,{
+        status: req.body.status,
+    },{
+        new:true,
+    })
+    res.json({
+        success:true,
+        message: "updated order",
+        orderUpdated,
+    })
+})

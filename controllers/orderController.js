@@ -75,6 +75,9 @@ export const createOrderController = asyncHandler(async(req,res)=>{
     const session = await stripe.checkout.sessions.create({
         //order user pay for
         line_items: convertedOrders,
+        metadata:{
+            orderId: JSON.stringify(order?._id),
+        }, 
         mode: "payment",
         success_url:"https://www.youtube.com/",
         cancel_url:"https://www.youtube.com/",

@@ -10,6 +10,7 @@ import brandRoute from '../routes/brandRoute.js';
 import colorRouter from '../routes/colorRoute.js';
 import reviewRoutes from '../routes/reviewRoute.js';
 import orderRouter from '../routes/orderRouter.js';
+import Order from '../model/Order.js';
 
 //Have access to variable in env file
 dotenv.config();
@@ -24,9 +25,9 @@ const stripe = new Stripe(process.env.STRIPE_KEY);
 
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
-const endpointSecret = "whsec_5439c3d4f1a1e705183c90a34d2a59b710033f8037af94d11ccc879a2674b74f";
+const endpointSecret = process.env.STRIPE_CLI_SECRET;
 
-app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
+app.post('/webhook', express.raw({type: 'application/json'}), async(request, response) => {
   const sig = request.headers['stripe-signature'];
 
   let event;
@@ -35,20 +36,35 @@ app.post('/webhook', express.raw({type: 'application/json'}), (request, response
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     
   } catch (err) {
-    console.log("error:", err.message)
     response.status(400).send(`Webhook Error: ${err.message}`);
     return;
   }
 
-  // Handle the event
-  switch (event.type) {
-    case 'payment_intent.succeeded':
-      const paymentIntentSucceeded = event.data.object;
-      // Then define and call a function to handle the event payment_intent.succeeded
-      break;
-    // ... handle other event types
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+  if(event.type === "checkout.session.completed"){
+    
+    //update order
+    const session = event.data.object;
+    console.log(session);
+    const {orderId} = session.metadata;
+    const paymentStatus = session.payment_status;
+    const paymentMethod = session.payment_method_types[0];
+    const totalAmount = session.amount_total;
+    const currency = session.currency;
+
+    //find the order
+    const order = await Order.findByIdAndUpdate(JSON.parse(orderId), {
+      totalPrice: totalAmount/100,
+      currency,
+      paymentMethod,
+      paymentStatus
+    }, {
+      new:true,
+    });
+
+    console.log(order);
+  }
+  else{
+    return;
   }
 
   // Return a 200 response to acknowledge receipt of the event

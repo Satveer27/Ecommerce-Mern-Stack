@@ -48,3 +48,49 @@ export const getAllCouponsController = asyncHandler(async(req,res)=>{
     })
 })
 
+//@description  get single Coupon
+//@route        GET /api/v1/coupon/:id
+//@access       Private/Admin
+
+export const getSingleCouponsController = asyncHandler(async(req,res)=>{ 
+    const coupons = await Coupon.findById(req.params.id);
+    res.json({
+        status:"success",
+        message:"single coupons",
+        coupons,
+    })
+})
+
+//@description  delete a Coupon
+//@route        GET /api/v1/coupon/:id/delete
+//@access       Private/Admin
+
+export const deleteCouponsController = asyncHandler(async(req,res)=>{ 
+    const coupons = await Coupon.findByIdAndDelete(req.params.id);
+    res.json({
+        status:"success",
+        message:"deleted coupons",
+        coupons,
+    })
+})
+
+//@description  update a Coupon
+//@route        GET /api/v1/coupon/:id/update
+//@access       Private/Admin
+
+export const updateCouponsController = asyncHandler(async(req,res)=>{ 
+    const {code, startDate, endDate, discount} = req.body;
+    const coupons = await Coupon.findByIdAndUpdate(req.params.id, {
+        code: code?.toUpperCase(),
+        discount,
+        startDate,
+        endDate
+    },{
+        new:true,
+    });
+    res.json({
+        status:"success",
+        message:"update coupons",
+        coupons,
+    })
+})

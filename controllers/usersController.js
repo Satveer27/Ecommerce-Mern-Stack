@@ -4,8 +4,6 @@ import User from "../model/User.js";
 import bcrypt from "bcryptjs";
 import generateToken from '../utils/generateToken.js';
 
-
-
 // @description Register users
 // @route Post /api/v1/users/register
 // @access Private/Admin

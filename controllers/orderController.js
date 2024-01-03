@@ -89,3 +89,32 @@ export const createOrderController = asyncHandler(async(req,res)=>{
     //Update user order
     
 });
+
+//@desc   get all orders
+//@route  GET /api/v1/order/allOrder
+//@access private/Admin
+
+export const getAllOrderController = asyncHandler(async(req,res)=>{
+//find all orders
+const order = await Order.find();
+res.json({
+    success:true,
+    message: "All order",
+    order,
+})
+})
+
+//@desc   get single order
+//@route  GET /api/v1/order/:id
+//@access private/Admin
+
+export const getSingleOrderController = asyncHandler(async(req,res)=>{
+    //get Single order
+    const id =  req.params.id;
+    const order = await Order.findById(id);
+    res.json({
+        success:true,
+        message: "single order",
+        order,
+    })
+})

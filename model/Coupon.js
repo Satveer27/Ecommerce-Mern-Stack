@@ -31,6 +31,12 @@ CouponSchema.virtual('isExpired').get(function(){
     return this.endDate< Date.now();
 });
 
+//days left for coupon to expire
+CouponSchema.virtual('daysLeft').get(function(){
+    const daysLeft = Math.ceil(( this.endDate - Date.now() )/(1000*60*60*24)) +" " + "Days left"
+    return daysLeft;
+});
+
 //validation
 //check if enddate<startdate
 CouponSchema.pre('validate', function(next){
@@ -63,6 +69,7 @@ CouponSchema.pre('validate', function(next){
     }
     next();
 });
+
 
 
 const Coupon = mongoose.model("Coupon", CouponSchema);

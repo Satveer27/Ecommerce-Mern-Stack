@@ -11,6 +11,7 @@ import colorRouter from '../routes/colorRoute.js';
 import reviewRoutes from '../routes/reviewRoute.js';
 import orderRouter from '../routes/orderRouter.js';
 import Order from '../model/Order.js';
+import couponRouter from '../routes/couponRoute.js';
 
 //Have access to variable in env file
 dotenv.config();
@@ -83,6 +84,7 @@ app.use('/api/v1/brand/', brandRoute);
 app.use('/api/v1/color/', colorRouter);
 app.use('/api/v1/reviews/', reviewRoutes);
 app.use('/api/v1/order/', orderRouter);
+app.use('/api/v1/coupon/', couponRouter);
 
 //error middleware
 app.use(notFound);

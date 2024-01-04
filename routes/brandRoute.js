@@ -10,6 +10,6 @@ brandRoute.post('/createBrand', isLoggedIn, isAdmin, upload.single('file'),creat
 brandRoute.get('/allBrand', getAllBrandController);
 brandRoute.get('/:id', getSingleBrandController);
 brandRoute.delete('/:id/deleteBrand', isLoggedIn, isAdmin, deleteBrandController);
-brandRoute.put('/:id/updateBrand', isLoggedIn, isAdmin, updateBrandController);
+brandRoute.put('/:id/updateBrand', isLoggedIn, isAdmin, upload.single('file'), updateBrandController);
 
 export default brandRoute;

@@ -57,12 +57,22 @@ export const getSingleCategoryController = asyncHandler(async(req,res)=>{
 // @access      Private/Admin
 
 export const updateCategoryController = asyncHandler(async(req, res)=>{
-    const {name, image} = req.body;
+    const imageConverter = req.file.path;
+    const {name} = req.body;
+
+    //check if name exist
+    const categoryExist = await Category.findOne({
+        name,
+    })
+
+    if(categoryExist){
+        throw new Error("Category already exist");
+    }
 
     //update
     const category = await Category.findByIdAndUpdate(req.params.id,{
             name,
-            image,
+            image: imageConverter,
     },{
         new: true,
     });

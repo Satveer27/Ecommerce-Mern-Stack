@@ -57,6 +57,15 @@ export const getSingleColorController = asyncHandler(async(req,res)=>{
 export const updateColorController = asyncHandler(async(req, res)=>{
     const {name} = req.body;
 
+    //check if name exist
+    const colorExist = await Color.findOne({
+        name,
+    })
+
+    if(colorExist){
+        throw new Error("Color already exist");
+    }
+
     //update
     const color = await Color.findByIdAndUpdate(req.params.id,{
             name,

@@ -57,12 +57,22 @@ export const getSingleBrandController = asyncHandler(async(req,res)=>{
 // @access      Private/Admin
 
 export const updateBrandController = asyncHandler(async(req, res)=>{
-    const {name, image} = req.body;
+    const imageConverter = req.file.path;
+    const {name} = req.body;
+
+    //check if name exist
+    const brandExists = await Brand.findOne({
+        name,
+    })
+
+    if(brandExists){
+        throw new Error("Brand already exist");
+    }
 
     //update
     const brand = await Brand.findByIdAndUpdate(req.params.id,{
             name,
-            image,
+            image: imageConverter,
     },{
         new: true,
     });

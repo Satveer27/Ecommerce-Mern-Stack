@@ -9,5 +9,5 @@ categoryRouter.post('/createCategory', isLoggedIn, isAdmin, upload.single('file'
 categoryRouter.get('/allCategory', getAllCategoryController);
 categoryRouter.get('/:id', getSingleCategoryController);
 categoryRouter.delete('/:id/deleteCategory', isLoggedIn, isAdmin, deleteCategoryController);
-categoryRouter.put('/:id/updateCategory', isLoggedIn, isAdmin, updateCategoryController);
+categoryRouter.put('/:id/updateCategory', isLoggedIn, isAdmin, upload.single('file'), updateCategoryController);
 export default categoryRouter;

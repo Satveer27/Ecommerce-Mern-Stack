@@ -177,7 +177,18 @@ export const getSingleProductController = asyncHandler(async(req, res)=>{
 // @access      Private/Admin
 
 export const updateProductController = asyncHandler(async(req, res)=>{
-    const {name, description, brand, category,color, user, images, price, totalQuantity, } = req.body;
+    const imageConverter = req.files.path;
+    const {name, description, brand, category,color, user, price, totalQuantity } = req.body;
+
+
+    //check if name exist
+    const productExist = await Product.findOne({
+        name,
+    })
+
+    if(productExist){
+        throw new Error("Product already exist");
+    }
 
     //update
     const product = await Product.findByIdAndUpdate(req.params.id,{
@@ -187,8 +198,8 @@ export const updateProductController = asyncHandler(async(req, res)=>{
             category,
             color,
             user,
-            images,
             price,
+            images:imageConverter,
             totalQuantity,
     },{
         new: true,

@@ -1,7 +1,13 @@
 # Ecommerce-API-app
 This API is for a eccomerce app. This is can be a backend for a eccomerce website, however the front end is not developed. This uses Node js with express as the framework of this api. The use of api such as Stripe is used for payments as well as cloudify for saving images. There are various functionalities for this api and it also implements CRUD methods. Such functionalities include:
 
-1.)User authentication(login, registering, viewing profile and updating shipping)<br />
+# 1.) User authentication
+* User authentication has login features where users can login with a correct email and password<br />
+* User authentication has registering features where users can register with a email, password and username.
+  * If a email exist then such account will not be registered.
+  * 
+* User authentication has a feature where users can view profile and the profile will include every single detail about the user including their orders.
+(, registering, viewing profile and updating shipping)
 
 2.)Products management(creation, deletion, update, getting all products, getting a singular product, filtering products and pagination of products. This uses CRUD methods)<br />
 

@@ -34,7 +34,7 @@ This API is for a eccomerce app. This is can be a backend for a eccomerce websit
 * Category management follows CRUD methods as mentioned above.
 <br />
 
-4.)Brand management
+# 4.)Brand management
 * Admins can create brand with specific fields and a file which will be uploaded to cloudify.
   * Only jpg, png and jpeg files are allowed as these files dictate a image
   * Only a singular image is allowed
@@ -45,7 +45,7 @@ This API is for a eccomerce app. This is can be a backend for a eccomerce websit
 * Category management follows CRUD methods as mentioned above.
 <br />
 
-5.)Color management
+# 5.)Color management
 * Admins can create brand with specific fields
 * Admins can delete colors
 * Admins can update a certain colors as well
@@ -54,12 +54,12 @@ This API is for a eccomerce app. This is can be a backend for a eccomerce websit
 * Color management follows CRUD methods as mentioned above.
 <br />
 
-6.)Reviews creation
+# 6.)Reviews creation
 * All users can create a review for a singular product
 * Reviews cant be given to the same product twice by the same user
 <br />
 
-7.)Order management
+# 7.)Order management
 * All users can create an order via the products they are going to buy
   * After an order is created a stripe payment will be given
   * Upon completion the order will update its status
@@ -71,7 +71,7 @@ This API is for a eccomerce app. This is can be a backend for a eccomerce websit
 * Admins can view all orders
 <br />
 
-8.)Coupon management
+# 8.)Coupon management
 * Admins can create coupons with specific fields
 * Admins can delete a coupon
 * Admins can update a certain coupon as well
@@ -81,9 +81,13 @@ This API is for a eccomerce app. This is can be a backend for a eccomerce websit
 * Coupons are made following the real world functionality of coupons
 <br />
 
+#Functionalities
+
 All these functionality follows the typical eccomerce app so the api would have similar functionality. The api can be checked and used with via postman as the link will be given below, more documentation for how the api works and how to use it on postman will also be given in the postman documentation. In addition the api was deployed in render and thus the reason why a base url is given as related to the deployment location. <br />
 
 Stripe is used in this case however the stripe CLI is needed in order to see the webhooks work to full potential. There is a link for developers in stripe to learn more about this. In addition the api keys for stripe is needed to run this project. Cloudify is also used and thus the api keys are also needed. Finally mongo database is also needed to be connected in order to use such code. <br />
+
+#Postman and deployment
 
 This API can be used as a backend for a upcoming front end eccomerce build. All details regarding postman documentation and deployment url is given below.<br />
 

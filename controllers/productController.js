@@ -2,14 +2,16 @@ import Category from "../model/Category.js";
 import Product from "../model/Product.js";
 import asyncHandler from 'express-async-handler';
 import Brand from "../model/Brand.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 // @description Create new product
 // @route       POST /api/v1/products/createProduct
 // @access      Private/Admin
 
 export const createProductController = asyncHandler(async(req,res)=>{
-    const {name, description, brand, category,color, images, price, totalQuantity, } = req.body;
-
+    const convertedImages = req.files.map((file)=>file.path);
+    const {name, description, brand, category,color, price, totalQuantity, } = req.body;
     //product exists
     const productExists = await Product.findOne({ name });
     if(productExists){
@@ -40,7 +42,7 @@ export const createProductController = asyncHandler(async(req,res)=>{
             category,
             color,
             user: req.userAuthId,
-            images,
+            images: convertedImages,
             price,
             totalQuantity,
     });

@@ -30,10 +30,12 @@ const ProductSchema = new Schema({
         ref:"User",
 
     },
-    images:{
+    images:[
+        {
         type:String,
         required:true,
-    },
+        }
+    ],
     reviews:[
         {
             type: mongoose.Schema.Types.ObjectId,

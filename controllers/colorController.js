@@ -79,5 +79,6 @@ export const deleteColorController = asyncHandler(async(req, res)=>{
     res.json({
         status:"success",
         message: "color deleted",
+        color,
     });
 })

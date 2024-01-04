@@ -9,7 +9,7 @@ export const createCouponController = asyncHandler(async(req,res)=>{
     const {code, startDate, endDate, discount} = req.body;
 
     const couponExist = await Coupon.findOne({
-        code
+        code: code?.toUpperCase(),
     })
 
     if(couponExist){
@@ -80,6 +80,14 @@ export const deleteCouponsController = asyncHandler(async(req,res)=>{
 
 export const updateCouponsController = asyncHandler(async(req,res)=>{ 
     const {code, startDate, endDate, discount} = req.body;
+    const couponExist = await Coupon.findOne({
+        code: code?.toUpperCase(),
+    })
+
+    if(couponExist){
+        throw new Error("Coupon already exist");
+    }
+    
     const coupons = await Coupon.findByIdAndUpdate(req.params.id, {
         code: code?.toUpperCase(),
         discount,

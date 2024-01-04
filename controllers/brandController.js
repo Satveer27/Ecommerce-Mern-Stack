@@ -6,7 +6,8 @@ import asyncHandler from 'express-async-handler';
 //@access       Private/Admin
 
 export const createBrandCtrl = asyncHandler(async(req,res)=>{
-    const{name, user ,image} = req.body
+    const imageConverter = req.file.path;
+    const{name} = req.body
     //check if brand exist
     const brandFound = await Brand.findOne({name})
     if(brandFound){
@@ -15,7 +16,7 @@ export const createBrandCtrl = asyncHandler(async(req,res)=>{
     const newBrand = await Brand.create({
         name: name.toLowerCase(),
         user: req.userAuthId,
-        image,
+        image: imageConverter,
     });
 
     res.json({

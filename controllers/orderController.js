@@ -18,20 +18,9 @@ const stripe = new Stripe(process.env.STRIPE_KEY);
 
 export const createOrderController = asyncHandler(async(req,res)=>{ 
 
-    //get the coupon
-    const {coupon} = req.query;
-    const couponFound = await Coupon.findOne({
-            code: coupon?.toUpperCase(),
-    })
-    if(couponFound?.isExpired){
-        throw new Error("Coupon has expired");
-    }
-    if(!couponFound){
-        throw new Error("Coupon doesnt exist")
-    }
-
-    //get the discount
-    const discount = couponFound?.discount / 100 ; 
+    //the order
+    let order = {};
+    
     //Get the payload(things we need for the order-customer, orderitems, shipping address, total price)
     const {orderItems, shippingAddress, totalPrice} = req.body;
     
@@ -48,13 +37,42 @@ export const createOrderController = asyncHandler(async(req,res)=>{
         throw new Error("No order items found");
     };
 
-    //Place the order - save to db
-    const order = await Order.create({
-        user: req.userAuthId,
-        orderItems,
-        shippingAddress,
-        totalPrice: couponFound ? totalPrice - totalPrice * discount: totalPrice,
-    })
+    //get the coupon
+    const {coupon} = req.query;
+    
+    if(coupon){
+         const couponFound = await Coupon.findOne({
+             code: coupon?.toUpperCase(),
+         })
+         if(couponFound?.isExpired){
+             throw new Error("Coupon has expired");
+         }
+         if(!couponFound){
+             throw new Error("Coupon doesnt exist")
+         }
+ 
+         //get the discount
+         const discount = couponFound?.discount / 100 ; 
+
+          //Place the order - save to db
+         order = await Order.create({
+                user: req.userAuthId,
+                orderItems,
+                shippingAddress,
+                totalPrice: couponFound ? totalPrice - totalPrice * discount: totalPrice,
+         })
+
+    }
+    else{
+        //Place the order - save to db
+        order = await Order.create({
+            user: req.userAuthId,
+            orderItems,
+            shippingAddress,
+            totalPrice,
+        })
+    }
+
     
     //push order into user
     user.orders.push(order?._id);

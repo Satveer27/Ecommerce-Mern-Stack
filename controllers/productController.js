@@ -209,5 +209,6 @@ export const deleteProductController = asyncHandler(async(req, res)=>{
     res.json({
         status:"success",
         message: "product deleted",
+        product,
     });
 })

@@ -91,7 +91,7 @@ Stripe is used in this case however the stripe CLI is needed in order to see the
 
 This API can be used as a backend for a upcoming front end eccomerce build. All details regarding postman documentation and deployment url is given below.<br />
 
-Deployment url:<br />
+Deployment url: https://ecommerce-app-api-bmre.onrender.com/<br />
 
-Postman api url:<br />
+Postman api url: https://documenter.getpostman.com/view/31402819/2s9YsGhszF <br />
 

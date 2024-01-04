@@ -12,6 +12,7 @@ import reviewRoutes from '../routes/reviewRoute.js';
 import orderRouter from '../routes/orderRouter.js';
 import Order from '../model/Order.js';
 import couponRouter from '../routes/couponRoute.js';
+import path from 'path';
 
 //Have access to variable in env file
 dotenv.config();
@@ -75,7 +76,13 @@ app.post('/webhook', express.raw({type: 'application/json'}), async(request, res
 //pass incoming data
 app.use(express.json());
 
+//server static files
+app.use(express.static('public'))
 //routes
+//Home route
+app.get('/',(req,res)=>{
+  res.sendFile(path.join('public','index.html'))
+})
 //mounting entire route inside app, according to pattern will redirect
 app.use('/api/v1/users/', userRoutes);
 app.use('/api/v1/products/', productRoutes);

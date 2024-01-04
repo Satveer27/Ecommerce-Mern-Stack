@@ -87,7 +87,7 @@ All these functionality follows the typical eccomerce app so the api would have 
 
 Stripe is used in this case however the stripe CLI is needed in order to see the webhooks work to full potential. There is a link for developers in stripe to learn more about this. In addition the api keys for stripe is needed to run this project. Cloudify is also used and thus the api keys are also needed. Finally mongo database is also needed to be connected in order to use such code. <br />
 
-#Postman and deployment
+# Postman and deployment
 
 This API can be used as a backend for a upcoming front end eccomerce build. All details regarding postman documentation and deployment url is given below.<br />
 

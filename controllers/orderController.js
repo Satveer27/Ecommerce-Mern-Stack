@@ -153,3 +153,61 @@ export const updateOrderController = asyncHandler(async(req,res)=>{
         orderUpdated,
     })
 })
+
+//@desc   get sales sum of orders
+//@route  GET /api/v1/order/sales/sum
+//@access private/Admin
+
+export const getOrderStatisticController = asyncHandler(async(req,res)=>{
+    
+    //get the orders analysis
+    const orders = await Order.aggregate([
+        {
+            $group:{
+                _id: null,
+                minimumSales:{
+                    $min: "$totalPrice"
+                },
+                totalSales:{
+                    $sum: "$totalPrice"
+                },
+                maximumSales:{
+                    $max: "$totalPrice"
+                },
+                averageSales:{
+                    $avg: "$totalPrice"
+                },
+            }
+        }
+    ]);
+
+    //get today date
+    const date = new Date();
+    const today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const salesToday = await Order.aggregate([
+        {
+            $match: {
+                createdAt:{
+                    $gte: today,
+                }
+            }
+        },
+        {
+            $group:{
+                _id:null,
+                totalSales:{
+                    $sum:"$totalPrice"
+                }
+            }
+        }
+    ])
+
+    res.json({
+        success:true,
+        message: "sum of order",
+        orders,
+        salesToday
+    })
+});
+
+

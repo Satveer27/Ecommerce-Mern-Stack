@@ -81,7 +81,7 @@ This API is for a eccomerce app. This is can be a backend for a eccomerce websit
 * Coupons are made following the real world functionality of coupons
 <br />
 
-#Functionalities
+# Functionalities
 
 All these functionality follows the typical eccomerce app so the api would have similar functionality. The api can be checked and used with via postman as the link will be given below, more documentation for how the api works and how to use it on postman will also be given in the postman documentation. In addition the api was deployed in render and thus the reason why a base url is given as related to the deployment location. <br />
 

@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginAction } from "../../../redux/slices/user/userSlice";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 
 const Login = () => {
+  //dispatch
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     email: "admin@gmail.com",
     password: "12345",
@@ -15,14 +20,21 @@ const Login = () => {
   //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
+    dispatch(loginAction({email,password}));
+    
   };
 
   //select store data
-  const { loading, userAuth } = {};
+  const{error, loading, userInfo} = useSelector((state)=>state?.users?.userAuth);
+  console.log(error, loading, userInfo);
+
   //redirect
-  if (userAuth?.userInfo?.status) {
-    window.location.href = "/admin";
+  if(userInfo?.userFound?.isAdmin){
+    window.location.href = '/admin';
+  }else if(userInfo?.userFound){
+    window.location.href = '/customer-profile';
   }
+
   return (
     <>
       <section className="py-20 bg-gray-100 overflow-x-hidden">
@@ -37,6 +49,8 @@ const Login = () => {
                 <p className="mb-10 font-semibold font-heading">
                   Happy to see you again
                 </p>
+                {/* errr */}
+                {error && <ErrorMsg message={error?.message}/>}
                 <form
                   className="flex flex-wrap -mx-4"
                   onSubmit={onSubmitHandler}>
@@ -70,9 +84,14 @@ const Login = () => {
                   </div>
 
                   <div className="w-full px-4">
+                  { loading ? 
+                    <button disabled className="bg-gray-800 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
+                      Loading...
+                    </button>:
                     <button className="bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
                       Login
-                    </button>
+                    </button>}
+                    
                   </div>
                 </form>
               </div>

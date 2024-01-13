@@ -17,6 +17,10 @@ export default function Navbar() {
 
   //get cart items from local storage
   let cartItemsFromLocalStorage;
+
+  //get login user from local storage
+  const user = JSON.parse(localStorage.getItem('userInfo'));
+  const isLoggedIn = user?.token ? true : false;
   return (
     <div className="bg-white">
       {/* Mobile menu */}
@@ -104,7 +108,8 @@ export default function Navbar() {
 
                 {/* mobile links register/login */}
                 <div className="space-y-6 border-t border-gray-200 py-6 px-4">
-                  <div className="flow-root">
+                  {!isLoggedIn && <>
+                    <div className="flow-root">
                     <Link
                       to="/register"
                       className="-m-2 block p-2 font-medium text-gray-900">
@@ -118,6 +123,7 @@ export default function Navbar() {
                       Sign in
                     </Link>
                   </div>
+                  </>}
                 </div>
 
                 <div className="space-y-6 border-t border-gray-200 py-6 px-4"></div>
@@ -137,7 +143,8 @@ export default function Navbar() {
               </p>
 
               <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                <Link
+                {!isLoggedIn && <>
+                  <Link
                   to="/register"
                   className="text-sm font-medium text-white hover:text-gray-100">
                   Create an account
@@ -148,6 +155,7 @@ export default function Navbar() {
                   className="text-sm font-medium text-white hover:text-gray-100">
                   Sign in
                 </Link>
+                </>}
               </div>
             </div>
           </div>
@@ -234,6 +242,7 @@ export default function Navbar() {
                   <div className="flex flex-1 items-center justify-end">
                     <div className="flex items-center lg:ml-8">
                       <div className="flex space-x-8">
+                      {isLoggedIn && <>
                         <div className="flex">
                           <Link
                             to="/customer-profile"
@@ -241,6 +250,8 @@ export default function Navbar() {
                             <UserIcon className="h-6 w-6" aria-hidden="true" />
                           </Link>
                         </div>
+                      </>}
+                        
                       </div>
 
                       <span

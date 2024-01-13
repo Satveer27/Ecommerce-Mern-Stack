@@ -1,5 +1,6 @@
 import express from 'express';
 import dbConnect from '../config/dbConnect.js';
+import cors from 'cors';
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
 import userRoutes from '../routes/usersRoute.js';
@@ -21,6 +22,8 @@ dotenv.config();
 dbConnect();
 const app = express();
 
+//cors
+app.use(cors()) //allow any client side to access api
 //stripe webhook
 //stripe instance
 const stripe = new Stripe(process.env.STRIPE_KEY);

@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import ErrorComponent from "../../ErrorMsg/ErrorMsg";
+import { useDispatch, useSelector } from "react-redux";
+import { registerAction } from "../../../redux/slices/user/userSlice";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 
 const RegisterForm = () => {
   //dispatch
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    fullname: "",
+    username: "",
     email: "",
     password: "",
   });
   //---Destructuring---
-  const { fullname, email, password } = formData;
+  const { username, email, password } = formData;
   //---onchange handler----
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,13 +22,13 @@ const RegisterForm = () => {
   //---onsubmit handler----
   const onSubmitHandler = (e) => {
     e.preventDefault();
+    dispatch(registerAction({username, email, password}))
   };
   //select store data
+  const { user, error, loading } = useSelector((state) => state?.users);
 
-  //select store data
-  const { loading, userAuth } = {};
   //redirect
-  if (userAuth?.userInfo?.status) {
+  if(user?.status === "success"){
     window.location.href = "/login";
   }
 
@@ -40,18 +44,18 @@ const RegisterForm = () => {
                 </h3>
                 {/* errr */}
                 {/* Error */}
-                {userAuth?.error?.message && (
-                  <ErrorComponent message={userAuth?.error?.message} />
+                {error && (
+                  <ErrorMsg message={error?.message} />
                 )}
                 <p className="mb-10">Please, do not hesitate</p>
                 <form onSubmit={onSubmitHandler}>
                   <input
-                    name="fullname"
-                    value={fullname}
+                    name="username"
+                    value={username}
                     onChange={onChangeHandler}
                     className="w-full mb-4 px-12 py-6 border border-gray-200 focus:ring-blue-300 focus:border-blue-300 rounded-md"
                     type="text"
-                    placeholder="Full Name"
+                    placeholder="Username"
                   />
                   <input
                     name="email"
@@ -69,12 +73,10 @@ const RegisterForm = () => {
                     type="password"
                     placeholder="Enter your password"
                   />
-                  <button
-                    // disable the button if loading is true
-                    disabled={loading}
-                    className="mt-12 md:mt-16 bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">
-                    {loading ? "Loading..." : "Register"}
-                  </button>
+                  
+                    {loading ? <LoadingComponent/> : 
+                    <button className="mt-12 md:mt-16 bg-blue-800 hover:bg-blue-900 text-white font-bold font-heading py-5 px-8 rounded-md uppercase">Register</button>}
+                  
                 </form>
               </div>
             </div>

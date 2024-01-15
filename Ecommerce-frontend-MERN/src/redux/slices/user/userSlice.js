@@ -38,12 +38,40 @@ export const loginAction = createAsyncThunk('users/login', async({email,password
     }
 })
 
+//register action
+export const registerAction = createAsyncThunk('users/register', async({username, email, password}, {rejectWithValue, getState, dispatch})=>{
+    try{
+        //make http req
+        const response = await axios.post(`${baseURL}/users/register`, {
+            email,
+            password,
+            username,
+        })
+        return response.data;
+    }catch(e){
+        console.log(e);
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
 //users slice
 const usersSlice = createSlice({
     name:'users',
     initialState,
     extraReducers: (builder)=>{
         //handle actions
+        //register
+        builder.addCase(registerAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(registerAction.fulfilled, (state, action)=>{
+            state.user = action.payload;
+            state.loading = false;
+        });
+        builder.addCase(registerAction.rejected, (state, action)=>{
+            state.error = action.payload;
+            state.loading = false;
+        });
         //login
         builder.addCase(loginAction.pending, (state, action)=>{
             state.userAuth.loading = true;

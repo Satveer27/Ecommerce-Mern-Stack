@@ -45,30 +45,33 @@ const App = () => {
               <AdminDashboard/>
             </AdminRoute>
         }>
-          {/* products */} <Route path="" element={<OrdersList />} />
+        {/* products */} <Route path="" element={<OrdersList />} />
           <Route path="add-product" element={<AddProduct />} />
           <Route path="manage-products" element={<ManageStocks />} />
           <Route path="products/edit/:id" element={<UpdateProduct />} />
-          {/* coupons */}
+        {/* coupons */}
           <Route path="add-coupon" element={<AddCoupon />} />
           <Route path="manage-coupon" element={<ManageCoupons />} />
           <Route path="manage-coupon/edit/:code" element={<UpdateCoupon />} />
-          {/* Category */}
+        {/* Category */}
           <Route path="category-to-add" element={<CategoryToAdd />} />{" "}
           <Route path="add-category" element={<AddCategory />} />
           <Route path="manage-category" element={<ManageCategories />} />
           <Route path="edit-category/:id" element={<UpdateCategory />} />
-          {/* brand category */}
+        {/* brand category */}
           <Route path="add-brand" element={<AddBrand />} />
           <Route path="all-brands" element={<BrandsColorsList />} />
-          {/* color category */}
+        {/* color category */}
           <Route path="add-color" element={<AddColor />} />
           <Route path="all-colors" element={<BrandsColorsList />} />
-          {/* Orders */}
+        {/* Orders */}
           <Route path="manage-orders" element={<ManageOrders />} />
           <Route path="order-payment" element={<OrderPayment />} />
           <Route path="customers" element={<Customers />} />
         </Route>
+
+
+        
         {/* public links */}
         {/* Products */}
         <Route path="/" element={<HomePage />} />

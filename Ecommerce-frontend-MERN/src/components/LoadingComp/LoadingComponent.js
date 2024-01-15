@@ -9,7 +9,7 @@ const LoadingComponent = () => {
         justifyContent: "center",
         alignItems: "center",
       }}>
-      <ReactLoading type="spin" color="red" />
+      <ReactLoading type="bars" color="red" />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import {createAsyncThunk, createAction, createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
 import { resetErrAction } from "../globalActions/globalAction";
@@ -72,6 +72,7 @@ const usersSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         });
+        
         //login
         builder.addCase(loginAction.pending, (state, action)=>{
             state.userAuth.loading = true;

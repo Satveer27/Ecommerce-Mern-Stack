@@ -1,26 +1,39 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Select from "react-select";
+import Select from 'react-select';
 import makeAnimated from "react-select/animated";
-
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
+import { createProductAction } from "../../../redux/slices/product/productSlices";
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
+  //sizes
+  const sizes = ['S','M','L','XL','XXL'];
+  const [sizeOption, setSizeOption] = useState([]);
+  const sizeOptionsCoverted = sizes?.map(size=>{
+    return{
+      value:size,
+      label:size,
+    }
+  })
+
+  //create handle change
+  const handleSizeChange = (sizes) =>{
+    setSizeOption(sizes);
+  }
+  const dispatch = useDispatch();
+
   let categories,
-    sizeOptionsCoverted,
-    handleSizeChange,
     colorOptionsCoverted,
     handleColorChangeOption,
     brands,
     loading,
     error,
     isAdded;
-
   //---form data---
   const [formData, setFormData] = useState({
     name: "",
@@ -42,18 +55,9 @@ export default function AddProduct() {
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    //reset form data
-    setFormData({
-      name: "",
-      description: "",
-      category: "",
-      sizes: "",
-      brand: "",
-      colors: "",
-      images: "",
-      price: "",
-      totalQty: "",
-    });
+    dispatch(createProductAction(formData));
+    //
+    
   };
 
   return (
@@ -94,7 +98,7 @@ export default function AddProduct() {
                   Select Size
                 </label>
                 <Select
-                  components={animatedComponents}
+                  //components={animatedComponents}
                   isMulti
                   name="sizes"
                   options={sizeOptionsCoverted}

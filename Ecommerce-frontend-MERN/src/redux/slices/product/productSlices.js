@@ -19,16 +19,21 @@ export const createProductAction = createAsyncThunk('products/createProduct', as
     try{
         const {name, description, category, sizes, brand, colors, price} = 
         payload;
-
+        
         //Token-authenticated
-
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`
+            }
+        }
         //images
 
         //make http req
         const response = await axios.post(`${baseURL}/products/createProduct`, {
             name, description, category, sizes, brand, colors, price
             
-        })
+        }, config)
         //save token to local storage
 
         return response.data;

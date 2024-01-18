@@ -6,45 +6,74 @@ import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
 import { createProductAction } from "../../../redux/slices/product/productSlices";
+import { fetchCategoryAction } from "../../../redux/slices/categories/categorySlices";
+import { fetchBrandAction } from "../../../redux/slices/categories/brandSlices";
+import { fetchColourAction } from "../../../redux/slices/categories/colourSlices";
 
 //animated components for react-select
 const animatedComponents = makeAnimated();
 
 export default function AddProduct() {
-  //sizes
-  const sizes = ['S','M','L','XL','XXL'];
-  const [sizeOption, setSizeOption] = useState([]);
-  const sizeOptionsCoverted = sizes?.map(size=>{
+  const dispatch = useDispatch();
+
+  //files
+  const[files, setFiles]=useState([]);
+  const[fileError, setFileError] = useState([]);
+
+  const fileHandleChange = (event)=>{
+    const newFiles = Array.from(event?.target?.files);
+    setFiles(newFiles)
+  }
+
+  //categories
+  useEffect(()=>{
+    dispatch(fetchCategoryAction())
+  },[dispatch])
+
+  //select data from store
+  const{categories, loading, error} = useSelector((state)=>state?.category)
+
+  //brands
+  useEffect(()=>{
+    dispatch(fetchBrandAction())
+  },[dispatch])
+
+  //select data from store
+  const{ brands }  = useSelector((state)=>state?.brand)
+
+  //colours
+  const [colourOption, setColourOption] = useState([]);
+  useEffect(()=>{
+    dispatch(fetchColourAction())
+  },[dispatch])
+
+  //select data from store
+  const{colours}  = useSelector((state)=>state?.colour)
+
+  //converted colours
+  const colourOptionsConverted = colours?.color?.map(color=>{
     return{
-      value:size,
-      label:size,
+      value:color?.name,
+      label:color?.name,
     }
   })
 
-  //create handle change
-  const handleSizeChange = (sizes) =>{
-    setSizeOption(sizes);
+  //create handle colour change
+  const handleColorChange = (colour) =>{
+    setColourOption(colour);
   }
-  const dispatch = useDispatch();
-
-  let categories,
-    colorOptionsCoverted,
-    handleColorChangeOption,
-    brands,
-    loading,
-    error,
+  
+  let
     isAdded;
   //---form data---
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     category: "",
-    sizes: "",
     brand: "",
-    colors: "",
-    images: "",
+    color: "",
     price: "",
-    totalQty: "",
+    totalQuantity: "",
   });
 
   //onChange
@@ -55,10 +84,12 @@ export default function AddProduct() {
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    dispatch(createProductAction(formData));
-    //
+    dispatch(createProductAction({
+      ...formData, files, color: colourOption?.map(color=>color.label),
+    }));
     
   };
+
 
   return (
     <>
@@ -92,25 +123,7 @@ export default function AddProduct() {
                   />
                 </div>
               </div>
-              {/* size option */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Select Size
-                </label>
-                <Select
-                  //components={animatedComponents}
-                  isMulti
-                  name="sizes"
-                  options={sizeOptionsCoverted}
-                  className="basic-multi-select"
-                  classNamePrefix="select"
-                  isClearable={true}
-                  isLoading={false}
-                  isSearchable={true}
-                  closeMenuOnSelect={false}
-                  onChange={(item) => handleSizeChange(item)}
-                />
-              </div>
+              
               {/* Select category */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -127,7 +140,7 @@ export default function AddProduct() {
                   <option value="Shoes">Shoes</option>
                   <option value="Accessories">Accessories</option> */}
                   <option>-- Select Category --</option>
-                  {categories?.map((category) => (
+                  {categories?.categories?.map((category) => (
                     <option key={category?._id} value={category?.name}>
                       {category.name}
                     </option>
@@ -146,7 +159,7 @@ export default function AddProduct() {
                   className="mt-1  block w-full rounded-md border-gray-300 py-2  pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm border"
                   defaultValue="Canada">
                   <option>-- Select Brand --</option>
-                  {brands?.map((brand) => (
+                  {brands?.brand?.map((brand) => (
                     <option key={brand?._id} value={brand?.name}>
                       {brand.name}
                     </option>
@@ -162,15 +175,15 @@ export default function AddProduct() {
                 <Select
                   components={animatedComponents}
                   isMulti
-                  name="colors"
-                  options={colorOptionsCoverted}
+                  name="color"
+                  options={colourOptionsConverted}
                   className="basic-multi-select"
                   classNamePrefix="select"
                   isClearable={true}
                   isLoading={false}
                   isSearchable={true}
                   closeMenuOnSelect={false}
-                  onChange={(e) => handleColorChangeOption(e)}
+                  onChange={(e) => handleColorChange(e)}
                 />
               </div>
 
@@ -203,9 +216,9 @@ export default function AddProduct() {
                           className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
                           <span>Upload files</span>
                           <input
-                            name="images"
-                            value={formData.images}
-                            onChange={handleOnChange}
+                            multiple
+                            
+                            onChange={fileHandleChange}
                             type="file"
                           />
                         </label>
@@ -241,8 +254,8 @@ export default function AddProduct() {
                 </label>
                 <div className="mt-1">
                   <input
-                    name="totalQty"
-                    value={formData.totalQty}
+                    name="totalQuantity"
+                    value={formData.totalQuantity}
                     onChange={handleOnChange}
                     type="number"
                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"

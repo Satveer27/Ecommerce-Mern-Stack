@@ -1,6 +1,8 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
+import { resetErrAction, resetSuccessAction } from "../globalActions/globalAction";
+
 
 //initial state
 const initialState = {
@@ -19,8 +21,6 @@ export const createProductAction = createAsyncThunk('products/createProduct', as
     try{
         const {name, description, category, brand, color, price, files, totalQuantity} = 
         payload;
-
-        console.log(name, description, category, brand, color, price, files);
     
         //Token-authenticated
         const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -30,7 +30,7 @@ export const createProductAction = createAsyncThunk('products/createProduct', as
                 "Content-Type": "multipart/form-data",
             }
         }
-        
+        console.log(name, description, category, brand, color, price, files, totalQuantity);
         //FormData
         const formData = new FormData();
         formData.append("name", name);
@@ -75,6 +75,14 @@ const productSlice = createSlice({
             state.product = action.payload;
             state.isAdded = true;
         });
+        //reset success
+        builder.addCase(resetSuccessAction.pending, (state, action)=>{
+            state.isAdded = false
+        })
+         //reset error
+         builder.addCase(resetErrAction.pending, (state, action)=>{
+            state.error = null
+        })
         builder.addCase(createProductAction.rejected, (state, action)=>{
             state.loading = false;
             state.error = action.payload;

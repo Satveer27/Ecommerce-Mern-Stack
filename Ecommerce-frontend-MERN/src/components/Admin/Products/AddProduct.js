@@ -22,30 +22,41 @@ export default function AddProduct() {
 
   const fileHandleChange = (event)=>{
     const newFiles = Array.from(event?.target?.files);
-    setFiles(newFiles)
+
+    //validation
+    const newError = [];
+
+    newFiles.forEach(file=>{
+      if(file?.size > 1000000){
+        newError.push(`${file?.name} is too large`)
+      }
+      if (!file?.type?.startsWith('image/')){
+        newError.push(`${file.name} is not an image`)
+      }
+    })
+    setFiles(newFiles);
+    console.log(newError);
+    setFileError(newError);
   }
 
   //categories
   useEffect(()=>{
     dispatch(fetchCategoryAction())
+    dispatch(fetchBrandAction())
+    dispatch(fetchColourAction())
   },[dispatch])
 
   //select data from store
-  const{categories, loading, error} = useSelector((state)=>state?.category)
+  const{categories} = useSelector((state)=>state?.category)
 
   //brands
-  useEffect(()=>{
-    dispatch(fetchBrandAction())
-  },[dispatch])
 
   //select data from store
   const{ brands }  = useSelector((state)=>state?.brand)
 
   //colours
   const [colourOption, setColourOption] = useState([]);
-  useEffect(()=>{
-    dispatch(fetchColourAction())
-  },[dispatch])
+ 
 
   //select data from store
   const{colours}  = useSelector((state)=>state?.colour)
@@ -63,8 +74,6 @@ export default function AddProduct() {
     setColourOption(colour);
   }
   
-  let
-    isAdded;
   //---form data---
   const [formData, setFormData] = useState({
     name: "",
@@ -81,9 +90,12 @@ export default function AddProduct() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const{product, isAdded, loading, error} = useSelector((state)=>state?.products)
+
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
+    console.log(fileError);
     dispatch(createProductAction({
       ...formData, files, color: colourOption?.map(color=>color.label),
     }));
@@ -94,6 +106,7 @@ export default function AddProduct() {
   return (
     <>
       {error && <ErrorMsg message={error?.message} />}
+      {fileError.length>0 && <ErrorMsg message='file too large or upload an img'/>}
       {isAdded && <SuccessMsg message="Product Added Successfully" />}
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -116,6 +129,7 @@ export default function AddProduct() {
                 </label>
                 <div className="mt-1">
                   <input
+                    required
                     name="name"
                     value={formData?.name}
                     onChange={handleOnChange}
@@ -130,6 +144,7 @@ export default function AddProduct() {
                   Select Category
                 </label>
                 <select
+                  required
                   name="category"
                   value={formData.category}
                   onChange={handleOnChange}
@@ -153,6 +168,7 @@ export default function AddProduct() {
                   Select Brand
                 </label>
                 <select
+                  required
                   name="brand"
                   value={formData.brand}
                   onChange={handleOnChange}
@@ -164,6 +180,7 @@ export default function AddProduct() {
                       {brand.name}
                     </option>
                   ))}
+                
                 </select>
               </div>
 
@@ -184,6 +201,7 @@ export default function AddProduct() {
                   isSearchable={true}
                   closeMenuOnSelect={false}
                   onChange={(e) => handleColorChange(e)}
+                  required
                 />
               </div>
 
@@ -217,14 +235,14 @@ export default function AddProduct() {
                           <span>Upload files</span>
                           <input
                             multiple
-                            
+                            required
                             onChange={fileHandleChange}
                             type="file"
                           />
                         </label>
                       </div>
                       <p className="text-xs text-gray-500">
-                        PNG, JPG, GIF up to 10MB
+                        PNG, JPG, GIF up to 1MB
                       </p>
                     </div>
                   </div>
@@ -259,6 +277,8 @@ export default function AddProduct() {
                     onChange={handleOnChange}
                     type="number"
                     className="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                    required
+
                   />
                 </div>
               </div>
@@ -276,6 +296,8 @@ export default function AddProduct() {
                     value={formData.description}
                     onChange={handleOnChange}
                     className="block w-full rounded-md border-gray-300 border shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  
+                    required
                   />
                 </div>
               </div>
@@ -284,6 +306,7 @@ export default function AddProduct() {
                   <LoadingComponent />
                 ) : (
                   <button
+                    disabled = {fileError?.length >0}
                     type="submit"
                     className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     Add Product

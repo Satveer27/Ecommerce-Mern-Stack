@@ -61,11 +61,39 @@ export const createProductAction = createAsyncThunk('products/createProduct', as
     }
 })
 
+//fetch product
+export const fetchProductAction = createAsyncThunk('products/list', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        
+        //make http req
+        const response = await axios.get(`${baseURL}/products/allProducts`)
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
 //product slices
 const productSlice = createSlice({
     name:'products',
     initialState, 
     extraReducers: (builder)=>{
+
+        //fetch products
+        builder.addCase(fetchProductAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(fetchProductAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.allProducts = action.payload;
+        });
+        builder.addCase(fetchProductAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.allProducts = null;
+        });
+
         //create product
         builder.addCase(createProductAction.pending, (state, action)=>{
             state.loading = true;

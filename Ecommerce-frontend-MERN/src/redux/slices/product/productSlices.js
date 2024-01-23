@@ -77,7 +77,7 @@ export const fetchProductAction = createAsyncThunk('products/list', async(payloa
 //fetch single product
 export const fetchSingleProduct = createAsyncThunk('products/details', async(productId, {rejectWithValue, getState, dispatch})=>{
     try{
-        
+        console.log(productId);
         //make http req
         const response = await axios.get(`${baseURL}/products/${productId}`)
         return response.data;

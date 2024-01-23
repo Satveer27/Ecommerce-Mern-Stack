@@ -1,12 +1,17 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux';
+import { fetchCategoryAction } from "../../redux/slices/categories/categorySlices";
 
 const AllCategories = () => {
-  const {
-    categories: { categories },
-    loading,
-    error,
-  } = {};
+   //dispatch
+   const dispatch = useDispatch();
+   useEffect(()=>{
+     dispatch(fetchCategoryAction())
+   },[dispatch])
+ 
+   //get data from store
+   const{categories} = useSelector((state)=>state?.category);
 
   return (
     <>
@@ -14,7 +19,7 @@ const AllCategories = () => {
         <div className="mx-auto max-w-7xl py-12 px-4 text-center sm:px-6 lg:py-16 lg:px-8">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             <span className="block">
-              Total Categories [{categories?.length}]
+              Total Categories [{categories?.categories?.length}]
             </span>
           </h2>
           <p>Browse our categories and find the best products for you.</p>
@@ -24,14 +29,14 @@ const AllCategories = () => {
         <div className="-my-2">
           <div className="relative box-content h-80 overflow-x-auto py-2 xl:overflow-visible">
             <div className="min-w-screen-xl absolute flex space-x-8 px-4 sm:px-6 lg:px-8 xl:relative xl:grid m-2  xl:grid-cols-5 xl:gap-x-8 xl:space-x-0 xl:px-0">
-              {categories?.map((category) => (
+              {categories?.categories?.map((category) => (
                 <Link
-                  key={category.name}
+                  key={category?.name}
                   to={`/products-filters?category=${category.name}`}
                   className="relative flex h-80 w-56 flex-col mt-4 overflow-hidden rounded-lg p-6 hover:opacity-75 xl:w-auto">
                   <span aria-hidden="true" className="absolute inset-0">
                     <img
-                      src={category.image}
+                      src={category?.image}
                       alt=""
                       className="h-full w-full object-cover object-center"
                     />

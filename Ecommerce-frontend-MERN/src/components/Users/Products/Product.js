@@ -106,7 +106,6 @@ export default function Product() {
 
   //get data from store
   const {loading, error, product} = useSelector(state=>state?.products);
-  console.log(product?.product);
 
   return (
     <div className="bg-white">
@@ -118,7 +117,7 @@ export default function Product() {
                 {product?.product?.name}
               </h1>
               <p className="text-xl font-medium text-gray-900">
-                $ {product?.product.price}.00
+                $ {product?.product?.price}.00
               </p>
             </div>
             {/* Reviews */}

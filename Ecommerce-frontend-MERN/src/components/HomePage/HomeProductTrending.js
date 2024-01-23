@@ -53,7 +53,7 @@ const HomeProductTrending = () => {
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">{product.description}</p>
                 <p className="mt-1 text-sm font-medium text-gray-900">
-                  {product.price}
+                  ${product.price}
                 </p>
               </Link>
             ))}

@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
-
+import { resetSuccessAction,resetErrAction } from "../globalActions/globalAction";
 //initial state
 const initialState = {
     brands: [],
@@ -17,8 +17,15 @@ const initialState = {
 //create brand
 export const createBrandAction = createAsyncThunk('brand/createBrand', async(payload, {rejectWithValue, getState, dispatch})=>{
     try{
-        const {name} = 
+        const {name, image} = 
         payload;
+
+        //form-data
+        const formData = new FormData();
+        formData.append('name',name);
+        image.forEach((file) => {
+            formData.append("file", file);
+        });
         
         //Token-authenticated
         const token = getState()?.users?.userAuth?.userInfo?.token;
@@ -28,9 +35,7 @@ export const createBrandAction = createAsyncThunk('brand/createBrand', async(pay
             }
         }
         //make http req
-        const response = await axios.post(`${baseURL}/brand/createBrand`, {
-            name
-        }, config)
+        const response = await axios.post(`${baseURL}/brand/createBrand`, formData, config)
         //save token to local storage
 
         return response.data;
@@ -88,7 +93,14 @@ const brandSlice = createSlice({
             state.error = action.payload;
             state.brands = null;
         });
-        
+        //reset success
+        builder.addCase(resetSuccessAction.pending, (state, action)=>{
+            state.isAdded = false
+        })
+         //reset error
+         builder.addCase(resetErrAction.pending, (state, action)=>{
+            state.error = null
+        })
     }
 })
 

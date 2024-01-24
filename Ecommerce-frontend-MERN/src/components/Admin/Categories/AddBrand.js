@@ -1,8 +1,36 @@
 import { useState } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { createBrandAction } from "../../../redux/slices/categories/brandSlices";
 import { Link } from "react-router-dom";
+import ErrorMsg from '../../ErrorMsg/ErrorMsg';
+import SuccessMsg from '../../SuccessMsg/SuccessMsg';
+import LoadingComponent from '../../LoadingComp/LoadingComponent';
 
 export default function AddBrand() {
+  const dispatch = useDispatch();
+
+  //files
+  const[file, setFiles]=useState([]);
+  const[fileError, setFileError] = useState([]);
+
+  const fileHandleChange = (event)=>{
+    const newFile = Array.from(event?.target?.files);
+
+    //validation
+    const newError = [];
+
+    newFile.forEach(file=>{
+      if(file?.size > 1000000){
+        newError.push(`${file?.name} is too large`)
+      }
+      if (!file?.type?.startsWith('image/')){
+        newError.push(`${file.name} is not an image`)
+      }
+    })
+    setFiles(newFile);
+    setFileError(newError);
+  }
+
   //form data
   const [formData, setFormData] = useState({
     name: "",
@@ -13,9 +41,20 @@ export default function AddBrand() {
   };
 
   //onSubmit
-  const handleOnSubmit = (e) => {};
+  const handleOnSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData.name, file);
+    dispatch(createBrandAction({name:formData.name, image: file}))
+  };
+
+  //get data from store
+  const {isAdded, loading, error} = useSelector((state)=>(state?.brand))
+
   return (
     <>
+    {isAdded && <SuccessMsg message='Brand created succesfully'/>}
+    {error && <ErrorMsg message={error?.message}/>}
+    {fileError.length>0 && <ErrorMsg message='file too large or upload an img'/>}
       <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <svg
@@ -55,12 +94,53 @@ export default function AddBrand() {
                   />
                 </div>
               </div>
+              <div className="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5">
+                <div className="mt-1 sm:col-span-2 sm:mt-0">
+                  <div className="flex max-w-lg justify-center rounded-md border-2 border-dashed border-gray-300 px-6 pt-5 pb-6">
+                    <div className="space-y-1 text-center">
+                      <svg
+                        className="mx-auto h-12 w-12 text-gray-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                        aria-hidden="true">
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      <div className="flex text-sm text-gray-600">
+                        <label
+                          htmlFor="file-upload"
+                          className="relative cursor-pointer rounded-md bg-white font-medium text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:text-indigo-500">
+                          <span>Upload file</span>
+                          <input
+                            required
+                            onChange={fileHandleChange}
+                            type="file"
+                          />
+                        </label>
+                      </div>
+                      <p className="text-xs text-gray-500">
+                        PNG, JPG, GIF up to 1MB
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div>
-                <button
+              {loading ? (
+                  <LoadingComponent />
+                ) : (
+                  <button
                   type="submit"
                   className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   Add Product Brand
                 </button>
+                )}
+              
               </div>
             </form>
 

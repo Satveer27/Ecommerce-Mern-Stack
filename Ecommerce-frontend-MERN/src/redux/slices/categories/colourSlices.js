@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import baseURL from "../../../utils/baseURL";
-
+import { resetSuccessAction,resetErrAction } from "../globalActions/globalAction";
 //initial state
 const initialState = {
     colours: [],
@@ -15,11 +15,9 @@ const initialState = {
 }
 
 //create colour
-export const createColourAction = createAsyncThunk('colour/createColour', async(payload, {rejectWithValue, getState, dispatch})=>{
+export const createColourAction = createAsyncThunk('colour/createColour', async(name, {rejectWithValue, getState, dispatch})=>{
     try{
-        const {name} = 
-        payload;
-        
+        console.log(name)
         //Token-authenticated
         const token = getState()?.users?.userAuth?.userInfo?.token;
         const config = {
@@ -28,9 +26,9 @@ export const createColourAction = createAsyncThunk('colour/createColour', async(
             }
         }
         //make http req
-        const response = await axios.post(`${baseURL}/color/createColor`, {
-            name
-        }, config)
+        const response = await axios.post(`${baseURL}/color/createColor`, 
+            {name}
+        , config)
         //save token to local storage
 
         return response.data;
@@ -88,6 +86,14 @@ const colourSlices = createSlice({
             state.error = action.payload;
             state.colours = null;
         });
+        //reset success
+        builder.addCase(resetSuccessAction.pending, (state, action)=>{
+            state.isAdded = false
+        })
+        //reset error
+        builder.addCase(resetErrAction.pending, (state, action)=>{
+            state.error = null
+        })
         
     }
 })

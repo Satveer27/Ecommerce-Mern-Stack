@@ -7,6 +7,7 @@ import {
   RadioGroup,
 } from "@headlessui/react";
 import baseURL from "../../../utils/baseURL";
+import NoDataFound from "../../NoDataFound/NoDataFound"
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
@@ -20,8 +21,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import { fetchProductAction } from "../../../redux/slices/product/productSlices";
 import {fetchBrandAction} from '../../../redux/slices/categories/brandSlices';
 import {fetchColourAction} from '../../../redux/slices/categories/colourSlices';
-
-
+import LoadingComponent from '../../LoadingComp/LoadingComponent'
+import ErrorMsg from '../../ErrorMsg/ErrorMsg'
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
   { name: "Best Rating", href: "#", current: false },
@@ -119,7 +120,7 @@ export default function ProductsFilters() {
   //fetch data from store
   const {brands} = useSelector((state)=>(state?.brand))
   const {colours} = useSelector((state)=>(state?.colour))
-  const {allProducts} = useSelector((state)=>(state?.products))
+  const {allProducts, loading, error} = useSelector((state)=>(state?.products))
 
   let colorsLoading;
   let colorsError;
@@ -637,14 +638,9 @@ export default function ProductsFilters() {
                 
               </form>
 
-              {/* Product grid */}
-              {productsLoading ? (
-                <h2 className="text-xl">Loading...</h2>
-              ) : productsError ? (
-                <h2 className="text-red-500">{productsError}</h2>
-              ) : (
-                <Products products={allProducts?.data} />
-              )}
+
+              {loading ? <LoadingComponent/>: error ? <ErrorMsg message={error?.message}/> : allProducts?.data?.length <= 0 ? <NoDataFound/>:
+              <Products products={allProducts?.data} />}
             </div>
           </section>
         </main>

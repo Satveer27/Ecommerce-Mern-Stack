@@ -38,7 +38,7 @@ export const createOrderController = asyncHandler(async(req,res)=>{
     };
 
     //get the coupon
-    const {coupon} = req.query;
+    const {coupon} = req?.query;
     
     if(coupon){
          const couponFound = await Coupon.findOne({

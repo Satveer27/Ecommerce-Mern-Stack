@@ -8,65 +8,8 @@ import { StarIcon } from "@heroicons/react/20/solid";
 import { Link, useParams } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchSingleProduct} from '../../../redux/slices/product/productSlices'
-
-const product = {
-  name: "Basic Tee",
-  price: "$35",
-  href: "#",
-  breadcrumbs: [
-    { id: 1, name: "Women", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      id: 1,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-featured-product-shot.jpg",
-      imageAlt: "Back of women's Basic Tee in black.",
-      primary: true,
-    },
-    {
-      id: 2,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-product-shot-01.jpg",
-      imageAlt: "Side profile of women's Basic Tee in black.",
-      primary: false,
-    },
-    {
-      id: 3,
-      imageSrc:
-        "https://tailwindui.com/img/ecommerce-images/product-page-01-product-shot-02.jpg",
-      imageAlt: "Front of women's Basic Tee in black.",
-      primary: false,
-    },
-  ],
-  colors: [
-    { name: "Black", bgColor: "bg-gray-900", selectedColor: "ring-gray-900" },
-    {
-      name: "Heather Grey",
-      bgColor: "bg-gray-400",
-      selectedColor: "ring-gray-400",
-    },
-  ],
-  sizes: [
-    { name: "XXS", inStock: true },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: false },
-  ],
-  description: `
-    <p>The Basic tee is an honest new take on a classic. The tee uses super soft, pre-shrunk cotton for true comfort and a dependable fit. They are hand cut and sewn locally, with a special dye technique that gives each tee it's own look.</p>
-    <p>Looking to stock your closet? The Basic tee also comes in a 3-pack or 5-pack at a bundle discount.</p>
-  `,
-  details: [
-    "Only the best materials",
-    "Ethically and locally made",
-    "Pre-washed and pre-shrunk",
-    "Machine wash cold with similar colors",
-  ],
-};
+import { addOrderToCart, getItemFromStorageAction } from "../../../redux/slices/cart/cartSlices";
+import Swal from "sweetalert2";
 
 const policies = [
   {
@@ -88,15 +31,9 @@ function classNames(...classes) {
 export default function Product() {
   //dispatch
   const dispatch = useDispatch();
-  const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
 
-  //Add to cart handler
-  const addToCartHandler = (item) => {};
   let productDetails = {};
-  let productColor;
-  let productSize;
-  let cartItems = [];
 
   //get id from params
   const {id} = useParams();
@@ -106,6 +43,54 @@ export default function Product() {
 
   //get data from store
   const {loading, error, product} = useSelector(state=>state?.products);
+
+  //get cart item 
+   useEffect(()=>{
+    dispatch(getItemFromStorageAction())
+  },[])
+
+  //get data from store
+  const{cartItems} = useSelector((state)=>(state?.cart));
+  const productExist = cartItems?.find((item)=>(item?._id?.toString() === product?.product?._id?.toString()));
+
+  console.log(cartItems?.length);
+
+  //Add to cart handler
+  const addToCartHandler = () => {
+    //check if product is in cart
+    if(productExist){
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "this product already in cart",
+      });
+    }
+    //check if color selected
+    if(selectedColor===""){
+      return Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "please select a color",
+      });
+    };
+
+    dispatch(addOrderToCart({
+      _id: product?.product?._id,
+      name: product?.product?.name,
+      totalQtyBuying: 1,
+      price: product?.product?.price,
+      description: product?.product?.description,
+      color: selectedColor,
+      image: product?.product?.images[0],
+      totalPrice: product?.product?.price,
+    }))
+    Swal.fire({
+      icon: "success",
+      title: "Good job",
+      text: "product added to cart succesfully",
+    });
+    return dispatch(getItemFromStorageAction());
+  };
 
   return (
     <div className="bg-white">
@@ -231,7 +216,7 @@ export default function Product() {
               </button>
               {/* proceed to check */}
 
-              {cartItems.length > 0 && (
+              {cartItems?.length > 0 && (
                 <Link
                   to="/shopping-cart"
                   className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-green-800 py-3 px-8 text-base font-medium text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">

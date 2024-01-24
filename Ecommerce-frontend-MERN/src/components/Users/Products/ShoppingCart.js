@@ -6,11 +6,12 @@ import {
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 import { Link } from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux';
+import { changeOrderQuantityAction, getItemFromStorageAction, removeOrderFromCart } from "../../../redux/slices/cart/cartSlices";
 
 export default function ShoppingCart() {
-  let cartItems;
-  let changeOrderItemQtyHandler;
-  let removeOrderItemFromLocalStorageHandler;
+  const dispatch = useDispatch();
+
   let calculateTotalDiscountedPrice;
   let error;
   let couponFound;
@@ -18,6 +19,25 @@ export default function ShoppingCart() {
   let setCoupon;
   let loading;
   let coupon;
+
+  useEffect(()=>{
+    dispatch(getItemFromStorageAction())
+  }, [dispatch])
+
+  // get cart items from store
+  const{cartItems} = useSelector((state)=>(state?.cart))
+  //add to cart handler
+  const changeOrderItemQtyHandler = (productId, qty)=>{
+    console.log(productId);
+    dispatch(changeOrderQuantityAction({productId, qty}));
+    dispatch(getItemFromStorageAction());
+  }
+
+  const removeOrderItemFromLocalStorageHandler = (productId) =>{
+    dispatch(removeOrderFromCart({productId}));
+    dispatch(getItemFromStorageAction());
+  }
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -37,8 +57,8 @@ export default function ShoppingCart() {
                 <li key={product._id} className="flex py-6 sm:py-10">
                   <div className="flex-shrink-0">
                     <img
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
+                      src={product.image}
+                      alt={product._id}
                       className="h-24 w-24 rounded-md object-cover object-center sm:h-48 sm:w-48"
                     />
                   </div>
@@ -48,24 +68,19 @@ export default function ShoppingCart() {
                       <div>
                         <div className="flex justify-between">
                           <h3 className="text-sm">
-                            <a
-                              href={product.href}
+                            <p
                               className="font-medium text-gray-700 hover:text-gray-800">
                               {product.name}
-                            </a>
+                            </p>
                           </h3>
                         </div>
                         <div className="mt-1 flex text-sm">
                           <p className="text-gray-500">{product.color}</p>
-                          {product.size ? (
-                            <p className="ml-4 border-l border-gray-200 pl-4 text-gray-500">
-                              {product.size}
-                            </p>
-                          ) : null}
                         </div>
                         <p className="mt-1 text-sm font-medium text-gray-900">
-                          $ {product.discountedPrice} X {product.qty}
+                          $ {product?.price} x {product?.totalQtyBuying} = ${product?.totalPrice}
                         </p>
+                      
                       </div>
 
                       <div className="mt-4 sm:mt-0 sm:pr-9">
@@ -73,20 +88,14 @@ export default function ShoppingCart() {
                           Quantity, {product.name}
                         </label>
                         <select
-                          onChange={(e) =>
-                            changeOrderItemQtyHandler(
-                              product?.productID,
-                              e.target.value
-                            )
-                          }
+                          onChange={(e)=>changeOrderItemQtyHandler(product?._id, e.target.value)}
                           className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                           {/* use the qty  */}
 
-                          {[...Array(product?.qtyLeft).keys()].map((x) => (
-                            <option key={x + 1} value={x + 1}>
-                              {x + 1}
-                            </option>
-                          ))}
+                            <option value={1}>1</option>
+                            <option value={2}>2</option>
+                            <option value={3}>3</option>
+                          
                         </select>
                         {/* remove */}
                         <div className="absolute top-0 right-0">
@@ -123,7 +132,7 @@ export default function ShoppingCart() {
               <div className="flex items-center justify-between">
                 <dt className="text-sm text-gray-600">Subtotal</dt>
                 <dd className="text-sm font-medium text-gray-900">
-                  $ {calculateTotalDiscountedPrice().toFixed(2)}
+                  $3000
                 </dd>
               </div>
               <div className="flex items-center justify-between border-t border-gray-200 pt-4"></div>
@@ -168,7 +177,7 @@ export default function ShoppingCart() {
                   Order total
                 </dt>
                 <dd className=" text-xl font-medium text-gray-900">
-                  $ {calculateTotalDiscountedPrice().toFixed(2)}
+                  $ 3000
                 </dd>
               </div>
             </dl>

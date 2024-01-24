@@ -6,7 +6,7 @@ import {
   Transition,
   RadioGroup,
 } from "@headlessui/react";
-
+import baseURL from "../../../utils/baseURL";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import {
   ChevronDownIcon,
@@ -15,7 +15,9 @@ import {
   PlusIcon,
 } from "@heroicons/react/20/solid";
 import Products from "./Products";
-
+import { useSearchParams } from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux';
+import { fetchProductAction } from "../../../redux/slices/product/productSlices";
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
   { name: "Best Rating", href: "#", current: false },
@@ -55,6 +57,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
+
 const sizeCategories = [
   "XXS",
   "XS",
@@ -67,18 +70,36 @@ const sizeCategories = [
   "XXXXL",
 ];
 
+
+
 export default function ProductsFilters() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  //get query string
+  const[params, setParams] = useSearchParams();
+  const category = params.get('category');
+  //filters
+  const [color, setColor] = useState('');
+  const [price, setPrice] = useState('');
+  const [brand, setBrand] = useState('');
+  
+  //dispatch
+  const dispatch = useDispatch();
+
+  //build up url(dynamic)
+  let productUrl = `${baseURL}/products/allProducts`
+
+  //fetch all products
+  useEffect(()=>{
+    dispatch(fetchProductAction({
+      url:productUrl,
+    }))
+  })
   let colorsLoading;
   let colorsError;
   let colors;
-  let setPrice;
   let brands;
-  let setSize;
-  let setColor;
-  let setBrand;
   let productsLoading;
   let productsError;
   let products;
@@ -343,54 +364,7 @@ export default function ProductsFilters() {
                     </Disclosure>
                     {/*  end product brand categories section */}
 
-                    {/* product size categories   */}
-                    <Disclosure
-                      as="div"
-                      key="disclosure"
-                      className="border-t border-gray-200 px-4 py-6">
-                      {({ open }) => (
-                        <>
-                          <h3 className="-mx-2 -my-3 flow-root">
-                            <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                              <span className="font-medium text-gray-900">
-                                Size
-                              </span>
-                              <span className="ml-6 flex items-center">
-                                {open ? (
-                                  <MinusIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                ) : (
-                                  <PlusIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                )}
-                              </span>
-                            </Disclosure.Button>
-                          </h3>
-                          <Disclosure.Panel className="pt-6">
-                            <div className="space-y-6">
-                              {sizeCategories.map((option) => (
-                                <div key={option} className="flex items-center">
-                                  <input
-                                    type="radio"
-                                    name="size"
-                                    onClick={() => setSize(option)}
-                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                  />
-                                  <label className="ml-3 min-w-0 flex-1 text-gray-500">
-                                    {option}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </Disclosure.Panel>
-                        </>
-                      )}
-                    </Disclosure>
-                    {/*  end product size categories section */}
+                
                   </form>
                   {/* end of mobile filters */}
                 </Dialog.Panel>
@@ -636,54 +610,7 @@ export default function ProductsFilters() {
                 </Disclosure>
                 {/*  end product brand categories section */}
 
-                {/* product size categories  desktop */}
-                <Disclosure
-                  as="div"
-                  key="disclosure"
-                  className="border-t border-gray-200 px-4 py-6">
-                  {({ open }) => (
-                    <>
-                      <h3 className="-mx-2 -my-3 flow-root">
-                        <Disclosure.Button className="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                          <span className="font-medium text-gray-900">
-                            Size
-                          </span>
-                          <span className="ml-6 flex items-center">
-                            {open ? (
-                              <MinusIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <PlusIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
-                            )}
-                          </span>
-                        </Disclosure.Button>
-                      </h3>
-                      <Disclosure.Panel className="pt-6">
-                        <div className="space-y-6">
-                          {sizeCategories.map((option) => (
-                            <div key={option} className="flex items-center">
-                              <input
-                                type="radio"
-                                name="size"
-                                onClick={() => setSize(option)}
-                                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                              />
-                              <label className="ml-3 min-w-0 flex-1 text-gray-500">
-                                {option}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
-                      </Disclosure.Panel>
-                    </>
-                  )}
-                </Disclosure>
-                {/*  end product size categories section */}
+                
               </form>
 
               {/* Product grid */}

@@ -62,11 +62,11 @@ export const createProductAction = createAsyncThunk('products/createProduct', as
 })
 
 //fetch product
-export const fetchProductAction = createAsyncThunk('products/list', async(payload, {rejectWithValue, getState, dispatch})=>{
+export const fetchProductAction = createAsyncThunk('products/list', async({url}, {rejectWithValue, getState, dispatch})=>{
     try{
         
         //make http req
-        const response = await axios.get(`${baseURL}/products/allProducts`)
+        const response = await axios.get(`${url}`)
         return response.data;
     }catch(e){
     
@@ -77,7 +77,7 @@ export const fetchProductAction = createAsyncThunk('products/list', async(payloa
 //fetch single product
 export const fetchSingleProduct = createAsyncThunk('products/details', async(productId, {rejectWithValue, getState, dispatch})=>{
     try{
-        console.log(productId);
+        
         //make http req
         const response = await axios.get(`${baseURL}/products/${productId}`)
         return response.data;

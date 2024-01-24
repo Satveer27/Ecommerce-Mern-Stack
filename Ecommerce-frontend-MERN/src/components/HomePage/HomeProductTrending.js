@@ -2,13 +2,16 @@ import { Link } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchProductAction} from '../../redux/slices/product/productSlices';
 import { useEffect } from "react";
+import baseURL from "../../utils/baseURL";
 
 const HomeProductTrending = () => {
   //dispatch
   const dispatch = useDispatch();
 
   useEffect(()=>{
-    dispatch(fetchProductAction())
+    dispatch(fetchProductAction({
+      url: `${baseURL}/products/allProducts`
+    }))
   },[dispatch]);
 
   //get data from store

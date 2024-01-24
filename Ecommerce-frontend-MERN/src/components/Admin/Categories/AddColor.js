@@ -21,7 +21,7 @@ export default function AddColor() {
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    dispatch(createColourAction(formData.name))
+    dispatch(createColourAction(formData?.name))
   };
 
   const {loading, isAdded, error} = useSelector((state)=>(state?.colour))

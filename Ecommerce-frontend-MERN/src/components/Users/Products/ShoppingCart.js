@@ -38,6 +38,12 @@ export default function ShoppingCart() {
     dispatch(getItemFromStorageAction());
   }
 
+  //calculate total price
+  const sumTotalPrice = cartItems?.reduce((acc, current)=>{
+    return acc + current?.totalPrice;
+  },0)
+  console.log(sumTotalPrice);
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -68,10 +74,11 @@ export default function ShoppingCart() {
                       <div>
                         <div className="flex justify-between">
                           <h3 className="text-sm">
-                            <p
-                              className="font-medium text-gray-700 hover:text-gray-800">
+                            <a
+                              href={`/products/${product._id}`}
+                              className="font-medium text-gray-700 hover:text-gray-800 text-xl">
                               {product.name}
-                            </p>
+                            </a>
                           </h3>
                         </div>
                         <div className="mt-1 flex text-sm">
@@ -92,9 +99,9 @@ export default function ShoppingCart() {
                           className="max-w-full rounded-md border border-gray-300 py-1.5 text-left text-base font-medium leading-5 text-gray-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:text-sm">
                           {/* use the qty  */}
 
-                            <option value={1}>1</option>
-                            <option value={2}>2</option>
-                            <option value={3}>3</option>
+                            {[...Array(product?.qtyLeft).keys()].map((qtys)=>{
+                              return(<option key={qtys} value={qtys+1}>{qtys+1}</option>)
+                            })}
                           
                         </select>
                         {/* remove */}
@@ -132,7 +139,7 @@ export default function ShoppingCart() {
               <div className="flex items-center justify-between">
                 <dt className="text-sm text-gray-600">Subtotal</dt>
                 <dd className="text-sm font-medium text-gray-900">
-                  $3000
+                ${sumTotalPrice}
                 </dd>
               </div>
               <div className="flex items-center justify-between border-t border-gray-200 pt-4"></div>
@@ -177,7 +184,7 @@ export default function ShoppingCart() {
                   Order total
                 </dt>
                 <dd className=" text-xl font-medium text-gray-900">
-                  $ 3000
+                ${sumTotalPrice}
                 </dd>
               </div>
             </dl>

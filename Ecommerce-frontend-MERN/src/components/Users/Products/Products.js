@@ -23,7 +23,7 @@ const Products = ({ products }) => {
                   />
                 </a>
                 <div className="px-6 pb-6 mt-8">
-                  <a className="block px-6 mb-2" href="#">
+                  <a className="block px-6 mb-2" href={`/products/${product.id}`}>
                     <h3 className="mb-2 text-xl font-bold font-heading">
                       {product?.name}
                     </h3>

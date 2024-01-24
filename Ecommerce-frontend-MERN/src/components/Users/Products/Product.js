@@ -83,6 +83,7 @@ export default function Product() {
       color: selectedColor,
       image: product?.product?.images[0],
       totalPrice: product?.product?.price,
+      qtyLeft: product?.product?.qtyLeft,
     }))
     Swal.fire({
       icon: "success",
@@ -91,6 +92,7 @@ export default function Product() {
     });
     return dispatch(getItemFromStorageAction());
   };
+  
 
   return (
     <div className="bg-white">

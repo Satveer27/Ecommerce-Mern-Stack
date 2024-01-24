@@ -15,12 +15,7 @@ const Products = ({ products }) => {
                 </span>
                 <Link
                   className="block"
-                  to={{
-                    pathname: `/products/${product?.id}`,
-                    // state: {
-                    //   product: product,
-                    // },
-                  }}>
+                  to={`/products/${product.id}`}>
                   <img
                     className="w-full h-64 object-cover"
                     src={product?.images[0]}

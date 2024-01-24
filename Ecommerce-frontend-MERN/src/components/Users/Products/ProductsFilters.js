@@ -18,6 +18,10 @@ import Products from "./Products";
 import { useSearchParams } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux';
 import { fetchProductAction } from "../../../redux/slices/product/productSlices";
+import {fetchBrandAction} from '../../../redux/slices/categories/brandSlices';
+import {fetchColourAction} from '../../../redux/slices/categories/colourSlices';
+
+
 const sortOptions = [
   { name: "Most Popular", href: "#", current: true },
   { name: "Best Rating", href: "#", current: false },
@@ -58,20 +62,6 @@ function classNames(...classes) {
 }
 
 
-const sizeCategories = [
-  "XXS",
-  "XS",
-  "S",
-  "M",
-  "L",
-  "XL",
-  "XXL",
-  "XXXL",
-  "XXXXL",
-];
-
-
-
 export default function ProductsFilters() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
@@ -95,11 +85,26 @@ export default function ProductsFilters() {
     dispatch(fetchProductAction({
       url:productUrl,
     }))
-  })
+
+    dispatch(fetchBrandAction({
+      url:productUrl,
+    }))
+
+    dispatch(fetchColourAction({
+      url:productUrl,
+    }))
+
+  }, [])
+
+  //fetch data from store
+  const {brands} = useSelector((state)=>(state?.brand))
+  const {colours} = useSelector((state)=>(state?.colour))
+  const {allProducts} = useSelector((state)=>(state?.products))
+
   let colorsLoading;
   let colorsError;
-  let colors;
-  let brands;
+
+  
   let productsLoading;
   let productsError;
   let products;
@@ -231,7 +236,7 @@ export default function ProductsFilters() {
                               ) : (
                                 <RadioGroup onChange={setColor}>
                                   <div className="flex items-start  flex-row flex-wrap">
-                                    {colors?.map((color) => (
+                                    {colours?.color?.map((color) => (
                                       <RadioGroup.Option
                                         key={color?._id}
                                         value={color}
@@ -342,7 +347,7 @@ export default function ProductsFilters() {
                           </h3>
                           <Disclosure.Panel className="pt-6">
                             <div className="space-y-2">
-                              {brands?.map((brand) => (
+                              {brands?.brand?.map((brand) => (
                                 <div
                                   key={brand?._id}
                                   className="flex items-center">
@@ -482,7 +487,7 @@ export default function ProductsFilters() {
                           ) : (
                             <RadioGroup onChange={setColor}>
                               <div className="flex items-start  flex-row flex-wrap">
-                                {colors?.map((color) => (
+                                {colours?.color?.map((color) => (
                                   <RadioGroup.Option
                                     key={color?.id}
                                     value={color}
@@ -590,7 +595,7 @@ export default function ProductsFilters() {
                       </h3>
                       <Disclosure.Panel className="pt-6">
                         <div className="space-y-2">
-                          {brands?.map((brand) => (
+                          {brands?.brand?.map((brand) => (
                             <div key={brand?._id} className="flex items-center">
                               <input
                                 onClick={() => setBrand(brand?.name)}
@@ -619,7 +624,7 @@ export default function ProductsFilters() {
               ) : productsError ? (
                 <h2 className="text-red-500">{productsError}</h2>
               ) : (
-                <Products products={products} />
+                <Products products={allProducts?.data} />
               )}
             </div>
           </section>

@@ -74,21 +74,26 @@ export default function ProductsFilters() {
   const [color, setColor] = useState('');
   const [price, setPrice] = useState('');
   const [brand, setBrand] = useState('');
-  console.log(brand)
+  
   //dispatch
   const dispatch = useDispatch();
 
   //build up url(dynamic)
-  let productUrl = `${baseURL}/products/allProducts`
+  let productUrl = `${baseURL}/products/allProducts?`
   if(category){
-    productUrl = `${baseURL}/products/allProducts?category=${category}`
+    productUrl = `${productUrl}category=${category}`
    
   }
   if(brand){
-    productUrl = `${baseURL}/products/allProducts?category=${category}&brand=${brand}`
+    productUrl = `${productUrl}&brand=${brand}`
   }
-
-  console.log(productUrl);
+  if(color){
+    productUrl = `${productUrl}&colour=${color?.name}`
+  }
+  if(price){
+    productUrl = `${productUrl}&price=${price}`
+  }
+  
 
   //fetch all products
   useEffect(()=>{
@@ -109,9 +114,6 @@ export default function ProductsFilters() {
       url:productUrl,
     }))
   }, [dispatch])
-
-
-
 
 
   //fetch data from store

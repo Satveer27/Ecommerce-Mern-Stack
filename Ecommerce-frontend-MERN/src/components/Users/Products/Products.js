@@ -13,15 +13,15 @@ const Products = ({ products }) => {
                 <span className="absolute top-0 left-0 ml-6 mt-6 px-2 py-1 text-xs font-bold font-heading bg-white border-2 border-red-500 rounded-full text-red-500">
                   -15%
                 </span>
-                <Link
+                <a
                   className="block"
-                  to={`/products/${product.id}`}>
+                  href={`/products/${product.id}`}>
                   <img
                     className="w-full h-64 object-cover"
                     src={product?.images[0]}
                     alt
                   />
-                </Link>
+                </a>
                 <div className="px-6 pb-6 mt-8">
                   <a className="block px-6 mb-2" href="#">
                     <h3 className="mb-2 text-xl font-bold font-heading">

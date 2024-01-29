@@ -50,6 +50,18 @@ export const fetchCouponAction = createAsyncThunk('coupon/fetch All', async(payl
     }
 })
 
+//fetch single coupon
+export const fetchSingleCouponAction = createAsyncThunk('coupon/fetch single', async(code, {rejectWithValue, getState, dispatch})=>{
+    try{
+        //make http req
+        const response = await axios.get(`${baseURL}/coupon/single?code=${code}`, {code});   
+        return response.data;
+
+    }catch(e){
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
 //slice
 const couponSlice = createSlice({
     name:'coupon',
@@ -71,7 +83,7 @@ const couponSlice = createSlice({
             state.brand = null;
         });
 
-        //fetch brand
+        //fetch coupon
         builder.addCase(fetchCouponAction.pending, (state, action)=>{
             state.loading = true;
         });
@@ -85,6 +97,24 @@ const couponSlice = createSlice({
             state.error = action.payload;
             state.brands = null;
         });
+
+         //fetch single coupon
+         builder.addCase(fetchSingleCouponAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(fetchSingleCouponAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.coupon = action.payload;
+            state.isAdded = true;
+        });
+        builder.addCase(fetchSingleCouponAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.coupon = null;
+            state.isAdded = false;
+        });
+
+
         //reset success
         builder.addCase(resetSuccessAction.pending, (state, action)=>{
             state.isAdded = false

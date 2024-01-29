@@ -8,24 +8,39 @@ import {
 import { Link } from "react-router-dom";
 import {useDispatch, useSelector} from 'react-redux';
 import { changeOrderQuantityAction, getItemFromStorageAction, removeOrderFromCart } from "../../../redux/slices/cart/cartSlices";
+import { fetchSingleCouponAction } from "../../../redux/slices/coupons/couponsSlice";
+import ErrorMsg from '../../ErrorMsg/ErrorMsg';
+import SuccessMsg from '../../SuccessMsg/SuccessMsg';
+import LoadingComponent from '../../LoadingComp/LoadingComponent';
 
 export default function ShoppingCart() {
   const dispatch = useDispatch();
 
   let calculateTotalDiscountedPrice;
-  let error;
   let couponFound;
-  let applyCouponSubmit;
-  let setCoupon;
-  let loading;
-  let coupon;
+  
 
   useEffect(()=>{
     dispatch(getItemFromStorageAction())
   }, [dispatch])
 
+  //coupon state
+  const[couponCode, setCouponCode] = useState(null);
+
+  const applyCouponSubmit = ((e)=>{
+    e.preventDefault()
+    console.log(couponCode)
+    dispatch(fetchSingleCouponAction(couponCode))
+    setCouponCode('')
+  })
+
+  // get coupon from store
+  const{coupon, loading, error, isAdded} = useSelector((state)=>(state?.coupon))
+
+
   // get cart items from store
   const{cartItems} = useSelector((state)=>(state?.cart))
+
   //add to cart handler
   const changeOrderItemQtyHandler = (productId, qty)=>{
     console.log(productId);
@@ -38,11 +53,16 @@ export default function ShoppingCart() {
     dispatch(getItemFromStorageAction());
   }
 
+  let sumTotalPrice = 0;
   //calculate total price
-  const sumTotalPrice = cartItems?.reduce((acc, current)=>{
+  sumTotalPrice = cartItems?.reduce((acc, current)=>{
     return acc + current?.totalPrice;
   },0)
-  console.log(sumTotalPrice);
+  console.log(sumTotalPrice)
+  //sum total after applied coupon
+  if(coupon?.coupons){
+    sumTotalPrice = sumTotalPrice - (sumTotalPrice * coupon?.coupons?.discount /100)
+  }
 
   return (
     <div className="bg-white">
@@ -148,7 +168,8 @@ export default function ShoppingCart() {
                 <span>Have coupon code? </span>
               </dt>
               {/* errr */}
-              {error && <span className="text-red-500">{error?.message}</span>}
+              {error && <ErrorMsg message={error?.message}/>}
+              {isAdded && <SuccessMsg message={`Congrats! You have got ${coupon?.coupons?.discount}%`}/>}
               {/* success */}
               {couponFound?.status === "success" && !error && (
                 <span className="text-green-800">
@@ -159,20 +180,14 @@ export default function ShoppingCart() {
               <form onSubmit={applyCouponSubmit}>
                 <div className="mt-1">
                   <input
-                    value={coupon}
-                    onChange={(e) => setCoupon(e.target.value)}
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
                     type="text"
                     className="block w-full rounded-md border p-2 border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                     placeholder="you@example.com"
                   />
                 </div>
-                {loading ? (
-                  <button
-                    disabled
-                    className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-gray-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Loading Please Wait...
-                  </button>
-                ) : (
+                {loading ? <LoadingComponent/> : (
                   <button className="inline-flex  text-center mt-4 items-center rounded border border-transparent bg-green-600 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                     Apply coupon
                   </button>

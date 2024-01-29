@@ -5,6 +5,7 @@ import categoryReducer from "../slices/categories/categorySlices";
 import brandReducer from "../slices/categories/brandSlices";
 import colourReducer from "../slices/categories/colourSlices";
 import cartReducer from "../slices/cart/cartSlices";
+import couponReducer from "../slices/coupons/couponsSlice";
 //create store
 
 const store = configureStore({
@@ -15,6 +16,7 @@ const store = configureStore({
        brand: brandReducer,
        colour: colourReducer,
        cart: cartReducer,
+       coupon: couponReducer,
     }
 });
 

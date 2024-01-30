@@ -3,6 +3,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getItemFromStorageAction} from "../../../redux/slices/cart/cartSlices";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { getUserProfileAction} from "../../../redux/slices/user/userSlice";
+import { placeOrderAction } from "../../../redux/slices/orders/orderSlices";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 
 export default function OrderPayment() {
   const calculateTotalDiscountedPrice = () => {};
@@ -11,6 +15,17 @@ export default function OrderPayment() {
   const {sumTotalPrice} = location.state;
   //dispatch
   const dispatch = useDispatch();
+
+  //user profile
+  useEffect(()=>{
+    dispatch(getUserProfileAction())
+  },[dispatch])
+
+  //useSelector
+  const {user, loading, error, profile} = useSelector  (state=>state?.users)
+  const {loading:orderLoading, error:orderError } = useSelector  (state=>state?.order)
+  
+
   useEffect(()=>{
     dispatch(getItemFromStorageAction())
   }, [dispatch])
@@ -23,7 +38,17 @@ export default function OrderPayment() {
     e.preventDefault();
   };
 
+  //place order action
+  const shippingAddress = profile?.user?.shippingAddress;
+  const placeOrderHandler = ()=>{
+    dispatch(placeOrderAction({
+      shippingAddress, orderItems:cartItems, totalPrice:sumTotalPrice
+    }))
+
+  }
   return (
+    <>
+    {orderError && <ErrorMsg message={orderError?.message}/>}
     <div className="bg-gray-50">
       <main className="mx-auto max-w-7xl px-4 pt-16 pb-24 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:max-w-none">
@@ -91,11 +116,11 @@ export default function OrderPayment() {
                 </dl>
 
                 <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
-                  <button
-                    onClick={createOrderSubmitHandler}
+                  {orderLoading?<LoadingComponent/>:<button
+                    onClick={placeOrderHandler}
                     className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
-                    Confirm Payment - ${calculateTotalDiscountedPrice()}
-                  </button>
+                    Confirm Payment - ${sumTotalPrice}
+                  </button>}
                 </div>
               </div>
             </div>
@@ -103,5 +128,6 @@ export default function OrderPayment() {
         </div>
       </main>
     </div>
+    </>
   );
 }

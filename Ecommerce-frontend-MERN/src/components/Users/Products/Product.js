@@ -211,11 +211,16 @@ export default function Product() {
 
             
               {/* add to cart */}
-              <button
+                {product?.product?.qtyLeft <= 0 ? <button
+                disabled
+                style={{cursor:'not-allowed'}}
+                className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-gray-600 py-3 px-8 text-base font-medium text-white focus:ring-indigo-500 focus:ring-offset-2">
+                Add to cart
+              </button> : <button
                 onClick={() => addToCartHandler()}
                 className="mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 py-3 px-8 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
                 Add to cart
-              </button>
+              </button>}
               {/* proceed to check */}
 
               {cartItems?.length > 0 && (

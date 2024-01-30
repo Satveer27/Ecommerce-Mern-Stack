@@ -11,13 +11,23 @@ import baseURL from "../../utils/baseURL";
 import logo from "./logo3.png";
 import { useDispatch,useSelector } from "react-redux";
 import { fetchCategoryAction } from "../../redux/slices/categories/categorySlices";
+import { getItemFromStorageAction } from "../../redux/slices/cart/cartSlices";
 
 export default function Navbar() {
   //dispatch
   const dispatch = useDispatch();
+
   useEffect(()=>{
     dispatch(fetchCategoryAction())
   },[dispatch])
+
+  //get data from store
+  useEffect(()=>{
+    dispatch(getItemFromStorageAction())
+  }, [dispatch])
+
+  // get cart items from store
+  const{cartItems} = useSelector((state)=>(state?.cart))
 
   //get data from store
   const{categories} = useSelector((state)=>state?.category);
@@ -282,8 +292,8 @@ export default function Navbar() {
                             aria-hidden="true"
                           />
                           <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                            {cartItemsFromLocalStorage?.length > 0
-                              ? cartItemsFromLocalStorage.length
+                            {cartItems?.length > 0
+                              ? cartItems?.length
                               : 0}
                           </span>
                         </Link>

@@ -16,10 +16,6 @@ import LoadingComponent from '../../LoadingComp/LoadingComponent';
 export default function ShoppingCart() {
   const dispatch = useDispatch();
 
-  let calculateTotalDiscountedPrice;
-  let couponFound;
-  
-
   useEffect(()=>{
     dispatch(getItemFromStorageAction())
   }, [dispatch])
@@ -169,14 +165,9 @@ export default function ShoppingCart() {
               </dt>
               {/* errr */}
               {error && <ErrorMsg message={error?.message}/>}
-              {isAdded && <SuccessMsg message={`Congrats! You have got ${coupon?.coupons?.discount}%`}/>}
+              
               {/* success */}
-              {couponFound?.status === "success" && !error && (
-                <span className="text-green-800">
-                  Congrats! You have got{" "}
-                  {couponFound?.coupon?.discountInPercentage} % discount
-                </span>
-              )}
+              {isAdded && <SuccessMsg message={`Congrats! You have got ${coupon?.coupons?.discount}%`}/>}
               <form onSubmit={applyCouponSubmit}>
                 <div className="mt-1">
                   <input
@@ -207,8 +198,9 @@ export default function ShoppingCart() {
             <div className="mt-6">
               <Link
                 //  pass data to checkout page
-                to={{
-                  pathname: "/order-payment",
+                to="/order-payment"
+                state={{
+                  sumTotalPrice : sumTotalPrice
                 }}
                 className="w-full rounded-md border border-transparent bg-indigo-600 py-3 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50">
                 Proceed to Checkout

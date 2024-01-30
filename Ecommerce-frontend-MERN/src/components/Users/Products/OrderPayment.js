@@ -1,10 +1,22 @@
 import AddShippingAddress from "../Forms/AddShippingAddress";
+import {useDispatch, useSelector} from 'react-redux';
+import {getItemFromStorageAction} from "../../../redux/slices/cart/cartSlices";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function OrderPayment() {
-  //---get cart items from store---
-  const { cartItems } = [];
-
   const calculateTotalDiscountedPrice = () => {};
+  //get data from location
+  const location = useLocation();
+  const {sumTotalPrice} = location.state;
+  //dispatch
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(getItemFromStorageAction())
+  }, [dispatch])
+
+  // get cart items from store
+  const{cartItems} = useSelector((state)=>(state?.cart))
 
   //create order submit handler
   const createOrderSubmitHandler = (e) => {
@@ -38,8 +50,8 @@ export default function OrderPayment() {
                     <li key={product._id} className="flex py-6 px-4 sm:px-6">
                       <div className="flex-shrink-0">
                         <img
-                          src={product.imageSrc}
-                          alt={product.imageAlt}
+                          src={product.image}
+                          alt={product._id}
                           className="w-20 rounded-md"
                         />
                       </div>
@@ -51,9 +63,6 @@ export default function OrderPayment() {
                               {product.name}
                             </p>
                             <p className="mt-1 text-sm text-gray-500">
-                              {product.size}
-                            </p>
-                            <p className="mt-1 text-sm text-gray-500">
                               {product.color}
                             </p>
                           </div>
@@ -61,7 +70,7 @@ export default function OrderPayment() {
 
                         <div className="flex flex-1 items-end justify-between pt-2">
                           <p className="mt-1 text-sm font-medium text-gray-900">
-                            $ {product?.discountedPrice} X {product?.qty}
+                            $ {product?.price} X {product?.totalQtyBuying} = ${product?.totalPrice}
                           </p>
                         </div>
                       </div>
@@ -76,7 +85,7 @@ export default function OrderPayment() {
                   <div className="flex items-center justify-between border-t border-gray-200 pt-6">
                     <dt className="text-base font-medium">Sub Total</dt>
                     <dd className="text-base font-medium text-gray-900">
-                      $ {calculateTotalDiscountedPrice()}
+                      $ {sumTotalPrice}
                     </dd>
                   </div>
                 </dl>

@@ -67,7 +67,7 @@ const couponSlice = createSlice({
     name:'coupon',
     initialState, 
     extraReducers: (builder)=>{
-        //create brand
+        //create coupon
         builder.addCase(createCouponAction.pending, (state, action)=>{
             state.loading = true;
         });
@@ -80,7 +80,7 @@ const couponSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
             state.isAdded = false;
-            state.brand = null;
+            state.coupon = null;
         });
 
         //fetch coupon
@@ -95,7 +95,6 @@ const couponSlice = createSlice({
         builder.addCase(fetchCouponAction.rejected, (state, action)=>{
             state.loading = false;
             state.error = action.payload;
-            state.brands = null;
         });
 
          //fetch single coupon

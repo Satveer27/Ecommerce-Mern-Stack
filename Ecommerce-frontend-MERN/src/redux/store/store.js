@@ -7,7 +7,7 @@ import colourReducer from "../slices/categories/colourSlices";
 import cartReducer from "../slices/cart/cartSlices";
 import couponReducer from "../slices/coupons/couponsSlice";
 import orderReducer from "../slices/orders/orderSlices";
-
+import reviewReducer from "../slices/review/reviewSlices";
 
 //create store
 
@@ -21,6 +21,7 @@ const store = configureStore({
        cart: cartReducer,
        coupon: couponReducer,
        order: orderReducer,
+       review: reviewReducer,
     }
 });
 

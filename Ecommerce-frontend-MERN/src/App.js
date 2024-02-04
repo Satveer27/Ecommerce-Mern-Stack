@@ -35,7 +35,7 @@ import AdminRoute from "./components/AuthRoute/AdminRoute.js";
 import UpdateOrders from "./components/Admin/Orders/UpdateOrders.js";
 import UpdateBrand from "./components/Admin/Categories/UpdateBrand.js";
 import ColourList from "./components/Admin/Categories/ColourList.js";
-
+import PaymentCancel from "./components/Users/Products/PaymentCancel.js";
 
 const App = () => {
     
@@ -85,6 +85,7 @@ const App = () => {
         <Route path="/products/:id" element={<Product />} />
         <Route path="/all-categories" element={<AllCategories />} />
         <Route path="success" element={<AuthRoute><ThanksForOrdering /></AuthRoute>} />
+        <Route path="cancel" element={<AuthRoute><PaymentCancel /></AuthRoute>} />
         {/* review */}
         <Route path="/add-review/:id" element={<AuthRoute><AddReview /></AuthRoute>} />
 

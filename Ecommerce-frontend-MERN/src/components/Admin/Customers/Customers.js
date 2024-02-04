@@ -15,10 +15,23 @@ export default function Customers() {
   const {loading, error, allOrders} = useSelector(state=>state?.order)
   const customers = allOrders?.order;
 
-  //remove duplicates
-  const uniqueCustomers = customers?.filter((item,idx)=>{
-    return customers?.map((customer)=>customer?.id).indexOf(item.id) === idx
-  })
+  let mymap = new Map();
+
+  let uniqueCustomers = customers?.filter(el => {
+    const val = mymap.get(el?.user?.username);
+    
+    if (val) {
+      if (el?.user?._id < val) {
+          mymap.delete(el?.user?.username);
+          mymap.set(el?.user?.username, el?.user?._id);
+          return true;
+      } else {
+          return false;
+      }
+  }
+  mymap.set(el?.user?.username, el?.user?._id);
+  return true;
+  });
 
   return (
   <>

@@ -38,6 +38,54 @@ export const createCouponAction = createAsyncThunk('coupon/createCoupon', async(
     }
 })
 
+//update coupon
+export const updateCouponAction = createAsyncThunk('coupon/updateCoupon', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        const {code, discount, startDate, endDate, id} = 
+        payload;
+        
+        //Token-authenticated
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`
+            }
+        }
+        //make http req
+        const response = await axios.put(`${baseURL}/coupon/${id}/updateCoupon`, {code, discount, startDate, endDate}, config)
+        //save token to local storage
+
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
+//delete coupon
+export const deleteCouponAction = createAsyncThunk('coupon/deleteCoupon', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        const {id} = 
+        payload;
+        console.log(id)
+        //Token-authenticated
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`
+            }
+        }
+        //make http req
+        const response = await axios.delete(`${baseURL}/coupon/${id}/deleteCoupon`, config)
+        //save token to local storage
+
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
 //fetch all coupons
 export const fetchCouponAction = createAsyncThunk('coupon/fetch All', async(payload, {rejectWithValue, getState, dispatch})=>{
     try{
@@ -83,6 +131,38 @@ const couponSlice = createSlice({
             state.coupon = null;
         });
 
+        //delete coupon
+        builder.addCase(deleteCouponAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(deleteCouponAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.coupon = action.payload;
+            state.isDeleted = true;
+        });
+        builder.addCase(deleteCouponAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.isDeleted = false;
+            state.coupon = null;
+        });
+
+        //update coupon
+        builder.addCase(updateCouponAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(updateCouponAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.coupon = action.payload;
+            state.isUpdated = true;
+        });
+        builder.addCase(updateCouponAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.isUpdated = false;
+            state.coupon = null;
+        });
+
         //fetch coupon
         builder.addCase(fetchCouponAction.pending, (state, action)=>{
             state.loading = true;
@@ -113,10 +193,11 @@ const couponSlice = createSlice({
             state.isAdded = false;
         });
 
-
         //reset success
         builder.addCase(resetSuccessAction.pending, (state, action)=>{
-            state.isAdded = false
+            state.isAdded = false;
+            state.isUpdated = false;
+            state.isDeleted = false;
         })
          //reset error
          builder.addCase(resetErrAction.pending, (state, action)=>{

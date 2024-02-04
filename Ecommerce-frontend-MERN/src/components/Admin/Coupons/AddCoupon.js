@@ -4,8 +4,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
+import {useDispatch, useSelector} from 'react-redux';
+import { createCouponAction } from "../../../redux/slices/coupons/couponsSlice";
 
 export default function AddCoupon() {
+  const dispatch = useDispatch();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
@@ -21,6 +24,12 @@ export default function AddCoupon() {
   //---onHandleSubmit---
   const onHandleSubmit = (e) => {
     e.preventDefault();
+    dispatch(createCouponAction({
+      discount: formData?.discount,
+      code: formData?.code,
+      startDate,
+      endDate
+    }))
 
     //reset form
     setFormData({
@@ -28,8 +37,11 @@ export default function AddCoupon() {
       discount: "",
     });
   };
+
+
+
   //---coupon from store---
-  const { loading, isAdded, error } = {};
+  const { loading, isAdded, error } = useSelector(state=>state.coupon);
   return (
     <>
       {error && <ErrorMsg message={error?.message} />}
@@ -55,6 +67,7 @@ export default function AddCoupon() {
               </label>
               <div className="mt-1">
                 <input
+                  required  
                   type="text"
                   name="code"
                   value={formData.code}
@@ -70,6 +83,7 @@ export default function AddCoupon() {
               </label>
               <div className="mt-1">
                 <input
+                  required
                   name="discount"
                   value={formData.discount}
                   onChange={onHandleChange}

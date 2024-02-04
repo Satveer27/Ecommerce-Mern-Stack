@@ -1,24 +1,34 @@
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-
+import { fetchSingleCouponAction, updateCouponAction } from "../../../redux/slices/coupons/couponsSlice";
 import "react-datepicker/dist/react-datepicker.css";
 import { useParams } from "react-router-dom";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
+import {useDispatch, useSelector} from 'react-redux';
 
 export default function UpdateCoupon() {
+  const dispatch = useDispatch();
+
   //---Fetch coupon ---
-  const { coupon, loading, error, isUpdated } = {};
+  const { coupon, loading, error, isUpdated } = useSelector(state=>state?.coupon);
+
   //get the coupon
   const { code } = useParams();
+
+  useEffect(()=>{
+    dispatch(fetchSingleCouponAction(code))
+  },[dispatch, code])
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
   //---handle form data---
   const [formData, setFormData] = useState({
-    code: coupon?.coupon?.code,
-    discount: coupon?.coupon?.discount,
+    code: coupon?.coupons?.code,
+    discount: coupon?.coupons?.discount,
+
   });
 
   //onHandleChange---
@@ -28,7 +38,13 @@ export default function UpdateCoupon() {
   //onHandleSubmit---
   const onHandleSubmit = (e) => {
     e.preventDefault();
-
+    dispatch(updateCouponAction({
+      id: coupon?.coupons?._id,
+      code: formData.code,
+      discount: formData.discount,
+      startDate,
+      endDate
+    }))
     //reset
     setFormData({
       code: "",

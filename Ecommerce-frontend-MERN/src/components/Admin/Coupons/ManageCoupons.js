@@ -1,16 +1,30 @@
-import { Link } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
+import {useDispatch, useSelector} from 'react-redux';
+import NoDataFound from "../../NoDataFound/NoDataFound";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
-import NoDataFound from "../../NoDataFound/NoDataFound";
+import { useEffect } from "react";
+import { deleteCouponAction, fetchCouponAction } from "../../../redux/slices/coupons/couponsSlice";
 
 export default function ManageCoupons() {
-  //get coupons
-  const { coupons, loading, error } = {};
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchCouponAction())
+  },[dispatch])
+
+  const {loading, error, coupons} = useSelector(state=>state?.coupon)
 
   //---deleteHandler---
 
-  const deleteCouponHandler = (id) => {};
+  const deleteCouponHandler = (id) => {
+    console.log(id)
+    dispatch(deleteCouponAction({id})).then(()=>{
+      window.location.reload();
+    });
+    
+  
+  };
 
   return (
     <div className="px-4 sm:px-6 lg:px-8">
@@ -76,6 +90,11 @@ export default function ManageCoupons() {
                         <th
                           scope="col"
                           className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                          status
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                           Edit
                         </th>
                         <th
@@ -94,15 +113,24 @@ export default function ManageCoupons() {
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {coupon?.discount}
                           </td>
+                          
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {new Date(coupon.startDate)?.toLocaleDateString()}
                           </td>
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {new Date(coupon.endDate)?.toLocaleDateString()}
                           </td>
+                          
 
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {coupon?.daysLeft}
+                          </td>
+                          <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                            {coupon?.isExpired ? <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                              expired
+                            </span> : <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              active
+                            </span>}
                           </td>
                           {/* edit icon */}
                           <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

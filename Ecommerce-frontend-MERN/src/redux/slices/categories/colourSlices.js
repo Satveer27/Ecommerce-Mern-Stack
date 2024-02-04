@@ -38,6 +38,30 @@ export const createColourAction = createAsyncThunk('colour/createColour', async(
     }
 })
 
+//delete colour
+export const deleteColourAction = createAsyncThunk('color/deleteColor', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        const {id} = payload;
+
+        //Token-authenticated
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`
+            }
+        }
+        //make http req
+        const response = await axios.delete(`${baseURL}/color/${id}/deleteColor`, config)
+        //save token to local storage
+
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
+
 //fetch color
 export const fetchColourAction = createAsyncThunk('colour/fetch All', async(payload, {rejectWithValue, getState, dispatch})=>{
     try{
@@ -72,6 +96,23 @@ const colourSlices = createSlice({
             state.colour = null;
         });
 
+        //delete colour
+        builder.addCase(deleteColourAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(deleteColourAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.colour = action.payload;
+            state.isDeleted = true;
+        });
+        builder.addCase(deleteColourAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.isDeleted = false;
+            state.colour = null;
+        });
+
+
         //fetch colour
         builder.addCase(fetchColourAction.pending, (state, action)=>{
             state.loading = true;
@@ -88,7 +129,8 @@ const colourSlices = createSlice({
         });
         //reset success
         builder.addCase(resetSuccessAction.pending, (state, action)=>{
-            state.isAdded = false
+            state.isAdded = false;
+            state.isDeleted = false;
         })
         //reset error
         builder.addCase(resetErrAction.pending, (state, action)=>{

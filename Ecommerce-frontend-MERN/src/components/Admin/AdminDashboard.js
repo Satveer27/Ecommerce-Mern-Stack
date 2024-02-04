@@ -138,7 +138,7 @@ function classNames(...classes) {
 const CategoryLinks = [
   { name: "Add Category", href: "category-to-add", icon: CogIcon },
   {
-    name: "Manage Category",
+    name: "All Category",
     href: "manage-category",
     icon: QuestionMarkCircleIcon,
   },

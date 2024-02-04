@@ -66,7 +66,7 @@ export const updateProductAction = createAsyncThunk('products/updateProduct', as
     try{
         const {name, description, category, brand, color, price, files, totalQuantity, id} = 
         payload;
-    
+        console.log(category);
         //Token-authenticated
         const token = getState()?.users?.userAuth?.userInfo?.token;
         const config = {
@@ -97,6 +97,32 @@ export const updateProductAction = createAsyncThunk('products/updateProduct', as
         const response = await axios.put(`${baseURL}/products/${id}/update`, 
             formData
         , config)
+        
+
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
+//delete product
+export const deleteProductAction = createAsyncThunk('products/deleteProduct', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        const {id} = 
+        payload;
+    
+        //Token-authenticated
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            }
+        }
+        
+        //make http req
+        const response = await axios.delete(`${baseURL}/products/${id}/delete`, config)
         
 
         return response.data;
@@ -152,6 +178,22 @@ const productSlice = createSlice({
             state.product = null;
         });
 
+        //delete single product
+        builder.addCase(deleteProductAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(deleteProductAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.product = action.payload;
+            state.isDeleted = true;
+        });
+        builder.addCase(deleteProductAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.product = null;
+            state.isDeleted = false;
+        });
+
         //update product
         builder.addCase(updateProductAction.pending, (state, action)=>{
             state.loading = true;
@@ -195,6 +237,7 @@ const productSlice = createSlice({
         builder.addCase(resetSuccessAction.pending, (state, action)=>{
             state.isAdded = false;
             state.isUpdated = false;
+            state.isDeleted = false;
         })
          //reset error
          builder.addCase(resetErrAction.pending, (state, action)=>{

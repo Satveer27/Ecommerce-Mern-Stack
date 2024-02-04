@@ -1,14 +1,27 @@
 import { Link } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategoryAction, deleteCategoryAction } from "../../../redux/slices/categories/categorySlices";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
+import { useEffect } from "react";
 
 export default function ManageCategories() {
-  const { categories, loading, error } = {};
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchCategoryAction());
+  }, [dispatch])
+
+  const { categories, loading, error } = useSelector(state=>state?.category);
 
   //delete category handler
-  const deleteCategoryHandler = (id) => {};
+  const deleteCategoryHandler = (id) => {
+    dispatch(deleteCategoryAction({id})).then(()=>{
+      window.location.reload();
+    });
+    
+  };
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -53,11 +66,7 @@ export default function ManageCategories() {
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
                         No. Products
                       </th>
-                      <th
-                        scope="col"
-                        className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                        Added By
-                      </th>
+                     
                       <th
                         scope="col"
                         className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -76,7 +85,7 @@ export default function ManageCategories() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {categories?.map((category) => (
+                    {categories?.categories?.map((category) => (
                       <tr key={category?._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                           <div className="flex items-center">
@@ -99,11 +108,7 @@ export default function ManageCategories() {
                             {category?.products?.length}
                           </div>
                         </td>
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                            {category?.user?.fullname}
-                          </span>
-                        </td>
+                        
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                           {new Date(category?.createdAt).toLocaleDateString()}
                         </td>

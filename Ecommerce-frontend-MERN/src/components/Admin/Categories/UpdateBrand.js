@@ -4,19 +4,20 @@ import ErrorComponent from "../../ErrorMsg/ErrorMsg";
 import SuccessMsg from "../../SuccessMsg/SuccessMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCategoryAction, fetchSingleCategoryAction } from "../../../redux/slices/categories/categorySlices";
-export default function UpdateCategory() {
+import { updateBrandAction, fetchSingleBrandAction } from "../../../redux/slices/categories/brandSlices";
+
+export default function UpdateBrand() {
   const dispatch = useDispatch();
   const {id} = useParams();
 
   useEffect(()=>{
-    dispatch(fetchSingleCategoryAction({id}))
+    dispatch(fetchSingleBrandAction({id}))
   },[dispatch])
   //files
   const[file, setFiles]=useState([]);
   const[fileError, setFileError] = useState([]);
 
-  const {loading, isUpdated, error, category} = useSelector(state=>state?.category)
+  const {loading, isUpdated, error, brand} = useSelector(state=>state?.brand)
   const fileHandleChange = (event)=>{
     const newFile = Array.from(event?.target?.files);
 
@@ -37,7 +38,7 @@ export default function UpdateCategory() {
 
   //---form data---
   const [formData, setFormData] = useState({
-    name: category?.categories?.name,
+    name: brand?.brand?.name,
   });
   //---onChange---
   const handleOnChange = (e) => {
@@ -47,7 +48,7 @@ export default function UpdateCategory() {
   //onSubmit
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateCategoryAction({...formData,file, id}))
+    dispatch(updateBrandAction({...formData,file, id}))
   };
   return (
     <>
@@ -69,7 +70,7 @@ export default function UpdateCategory() {
             />
           </svg>
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-            Update Product Category
+            Update Brand
           </h2>
         </div>
 
@@ -134,7 +135,7 @@ export default function UpdateCategory() {
                   <button
                     type="submit"
                     className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Update Category
+                    Update Brand
                   </button>
                 )}
               </div>
@@ -174,7 +175,7 @@ export default function UpdateCategory() {
                     <Link
                       to="/admin/add-category"
                       className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-500 shadow-sm hover:bg-gray-50">
-                      Add Category
+                      Add Brand
                     </Link>
                   </div>
                 </div>

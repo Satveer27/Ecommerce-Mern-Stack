@@ -4,14 +4,13 @@ import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
 import {useDispatch, useSelector} from 'react-redux';
 import { useEffect } from "react";
-import { fetchProductAction } from "../../../redux/slices/product/productSlices";
+import { deleteProductAction, fetchProductAction } from "../../../redux/slices/product/productSlices";
 import baseURL from "../../../utils/baseURL";
 
 export default function ManageStocks() {
   //dispatch
   const dispatch = useDispatch();
   //Selector
-  let products;
   let productURL = `${baseURL}/products/allProducts`
 
   useEffect(()=>{
@@ -22,7 +21,11 @@ export default function ManageStocks() {
 
   const {allProducts, loading, error} = useSelector(state=>state?.products)
   //delete product handler
-  const deleteProductHandler = (id) => {};
+  const deleteProductHandler = (id) => {
+    dispatch(deleteProductAction({id})).then(()=>{
+      window.location.reload();
+    });
+  };
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
@@ -197,7 +200,7 @@ export default function ManageStocks() {
                               />
                             </svg>
 
-                            <span className="sr-only">, {product.name}</span>
+                            
                           </button>
                         </td>
                       </tr>

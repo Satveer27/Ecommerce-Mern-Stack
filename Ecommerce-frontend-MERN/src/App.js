@@ -33,6 +33,8 @@ import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
 import AuthRoute from "./components/AuthRoute/AuthRoute.js";
 import AdminRoute from "./components/AuthRoute/AdminRoute.js";
 import UpdateOrders from "./components/Admin/Orders/UpdateOrders.js";
+import UpdateBrand from "./components/Admin/Categories/UpdateBrand.js";
+import ColourList from "./components/Admin/Categories/ColourList.js";
 
 const App = () => {
   return (
@@ -62,9 +64,10 @@ const App = () => {
         {/* brand category */}
           <Route path="add-brand" element={<AddBrand />} />
           <Route path="all-brands" element={<BrandsColorsList />} />
+          <Route path="brand/update/:id" element={<UpdateBrand />} />
         {/* color category */}
           <Route path="add-color" element={<AddColor />} />
-          <Route path="all-colors" element={<BrandsColorsList />} />
+          <Route path="all-colors" element={<ColourList />} />
         {/* Orders */}
           <Route path="manage-orders" element={<ManageOrders />} />
           <Route path="orders/:id" element={<UpdateOrders />} />

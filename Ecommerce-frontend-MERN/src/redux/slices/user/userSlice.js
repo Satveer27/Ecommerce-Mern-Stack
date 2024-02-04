@@ -13,7 +13,7 @@ const initialState = {
     loading: false,
     error: null,
     users: [],
-    user :{},
+    user :null,
     profile: {},
     userAuth:{
         loading:false,
@@ -96,6 +96,13 @@ export const getUserProfileAction = createAsyncThunk('users/profile-fetch', asyn
     }
 })
 
+//update logout action
+export const logoutAction = createAsyncThunk('users/logout', async(payload, {rejectWithValue, getState, dispatch})=>{
+    localStorage.removeItem('userInfo');
+    return true;  
+})
+
+
 //users slice
 const usersSlice = createSlice({
     name:'users',
@@ -139,6 +146,11 @@ const usersSlice = createSlice({
         builder.addCase(updateShippingAddress.rejected, (state, action)=>{
             state.error = action.payload;
             state.loading = false;
+        });
+
+        //logout action
+        builder.addCase(logoutAction.fulfilled, (state, action)=>{
+            state.userAuth.userInfo = null
         });
 
         //profile

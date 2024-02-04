@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAction } from "../../../redux/slices/user/userSlice";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
@@ -27,10 +27,11 @@ const RegisterForm = () => {
   //select store data
   const { user, error, loading } = useSelector((state) => state?.users);
 
-  //redirect
-  if(user?.status === "success"){
-    window.location.href = "/login";
-  }
+  useEffect(()=>{
+    if(user){
+      window.location.href = "/login"
+    }
+  },[user])
 
   return (
     <>

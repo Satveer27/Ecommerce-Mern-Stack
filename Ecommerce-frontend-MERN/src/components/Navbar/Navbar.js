@@ -12,10 +12,21 @@ import logo from "./logo3.png";
 import { useDispatch,useSelector } from "react-redux";
 import { fetchCategoryAction } from "../../redux/slices/categories/categorySlices";
 import { getItemFromStorageAction } from "../../redux/slices/cart/cartSlices";
+import { logoutAction } from "../../redux/slices/user/userSlice";
+import { fetchCouponAction } from "../../redux/slices/coupons/couponsSlice";
 
 export default function Navbar() {
   //dispatch
   const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchCouponAction())
+  },[dispatch])
+
+  const {loading, error, coupons} = useSelector(state=>state?.coupon)
+  //get current coupon
+  const currentCoupon = coupons?.coupons?.[coupons?.coupons?.length - 1]
+  console.log(currentCoupon);
 
   useEffect(()=>{
     dispatch(fetchCategoryAction())
@@ -37,6 +48,12 @@ export default function Navbar() {
   console.log(categoriesToDisplay);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const logoutHandler = ()=>{
+    dispatch(logoutAction()).then(()=>{
+      window.location.reload();
+    });
+  }
 
   //get cart items from local storage
   let cartItemsFromLocalStorage;
@@ -159,13 +176,21 @@ export default function Navbar() {
 
       <header className="relative z-10">
         <nav aria-label="Top">
-          {/* Top navigation  desktop*/}
-          <div className="bg-gray-900">
+        {/* Coupon Menu desktop*/}
+        {!currentCoupon?.isExpired && (
+          <div className="bg-yellow-600">
             <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-              <p className="flex-1 text-center text-sm font-medium text-white lg:flex-none">
-                Get free delivery on orders over $100
+              <p style={{ textAlign:'center', width:'100%'}}className="flex-1 text-center text-sm font-medium text-black lg:flex-none">
+                {currentCoupon && !currentCoupon?.isExpired ? `${currentCoupon?.code} - ${currentCoupon?.discount}% ,  ${currentCoupon?.daysLeft} Days left` : 'NO FLASH SALE AT THE MOMENT'}
               </p>
 
+    
+            </div>
+          </div>
+        )}
+         {/* Top navigation  desktop*/}
+          {!isLoggedIn && ( <div className="bg-gray-800">
+            <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
               <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                 {!isLoggedIn && <>
                   <Link
@@ -182,8 +207,9 @@ export default function Navbar() {
                 </>}
               </div>
             </div>
-          </div>
+          </div>)}
 
+          
           {/* Deskto Navigation */}
           <div className="bg-white">
             <div className="border-b border-gray-200">
@@ -261,6 +287,18 @@ export default function Navbar() {
                       alt="i-novotek logo"
                     />
                   </Link>
+                  
+                  {/* login profile icon mobile */}
+                  <div className="flex flex-1 items-center justify-end">
+                    {user?.userFound?.isAdmin && (
+                      <Link
+                        to="/admin"
+                        className="inline-flex items-center rounded-md border border-transparent bg-red-500 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      >
+                        Admin Dashboard
+                      </Link>
+                    )}
+                  </div>
 
                   {/* login profile icon mobile */}
                   <div className="flex flex-1 items-center justify-end">
@@ -273,6 +311,12 @@ export default function Navbar() {
                             className="-m-2 p-2 text-gray-400 hover:text-gray-500">
                             <UserIcon className="h-6 w-6" aria-hidden="true" />
                           </Link>
+                          <button onClick={logoutHandler}>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-gray-500">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+</svg>
+
+                          </button>
                         </div>
                       </>}
                         

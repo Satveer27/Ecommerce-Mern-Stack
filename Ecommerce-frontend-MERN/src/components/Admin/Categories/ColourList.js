@@ -25,7 +25,7 @@ export default function BrandsColorsList() {
       <div className="sm:flex sm:items-center"></div>
 
       <h3 className="text-lg font-medium leading-6 text-gray-900 mt-3">
-        Colours
+        Colours [{colours?.color?.length}]
       </h3>
       {loading ? (
         <LoadingComponent />

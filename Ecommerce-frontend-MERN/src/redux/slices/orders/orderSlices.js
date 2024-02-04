@@ -35,6 +35,7 @@ export const placeOrderAction = createAsyncThunk('order/placeOrder', async(paylo
             {orderItems, shippingAddress, totalPrice}
         , config)
         
+        localStorage.setItem("cartItems", JSON.stringify([]));
         return window.open(response?.data?.url);
     }catch(e){
     

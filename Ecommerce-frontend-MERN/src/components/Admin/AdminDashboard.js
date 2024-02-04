@@ -15,7 +15,9 @@ import {
   UserGroupIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getUserProfileAction } from "../../redux/slices/user/userSlice";
 
 
 const ordersLinks = [
@@ -162,7 +164,15 @@ const brandsLinks = [
 ];
 
 export default function Example() {
+  const dispatch = useDispatch();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(()=>{
+    dispatch(getUserProfileAction())
+  },[dispatch])
+
+  const {loading, error, profile} = useSelector(state=>state?.users)
+
 
   return (
     <>
@@ -468,11 +478,6 @@ export default function Example() {
                   <div className="min-w-0 flex-1">
                     {/* Profile */}
                     <div className="flex items-center">
-                      <img
-                        className="hidden h-16 w-16 rounded-full sm:block"
-                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.6&w=256&h=256&q=80"
-                        alt=""
-                      />
                       <div>
                         <div className="flex items-center">
                           <img
@@ -481,7 +486,7 @@ export default function Example() {
                             alt=""
                           />
                           <h1 className="ml-3 text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:leading-9">
-                            Good morning, Emilia Birch
+                            Good morning, {profile?.user?.username}
                           </h1>
                         </div>
                         <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
@@ -515,7 +520,7 @@ export default function Example() {
                                 stroke-width="2"
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
-                            Date Joined: 12/12/2020
+                            Date Joined: {new Date(profile?.user?.createdAt).toLocaleDateString()}
                           </dd>
                           {/* email */}
                           <dd className="mt-3 flex items-center text-sm font-medium  text-gray-500 sm:mr-6 sm:mt-0">
@@ -531,7 +536,7 @@ export default function Example() {
                                 stroke-width="2"
                                 d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                             </svg>
-                            admin@gmail.com
+                            {profile?.user?.email}
                           </dd>
                         </dl>
                       </div>

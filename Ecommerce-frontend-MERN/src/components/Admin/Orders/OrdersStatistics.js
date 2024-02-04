@@ -41,7 +41,7 @@ export default function OrdersStats() {
             </p>
           </dt>
           <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
-            <p className="text-2xl font-semibold text-gray-900">${stats?.saleToday?.length <= 0 ? '$0.00': 0}</p>
+            <p className="text-2xl font-semibold text-gray-900">${stats?.salesToday[0]?.totalSales ? stats?.salesToday[0]?.totalSales:'0.00'}</p>
 
           </dd>
         </div>
@@ -122,7 +122,7 @@ export default function OrdersStats() {
             </p>
           </dt>
           <dd className="ml-16 flex items-baseline pb-6 sm:pb-7">
-            <p className="text-2xl font-semibold text-gray-900">${statistic[4]}</p>
+            <p className="text-2xl font-semibold text-gray-900">${Math.floor(statistic[4] * 100) / 100}</p>
 
         
           </dd>

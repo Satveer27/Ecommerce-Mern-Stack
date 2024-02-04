@@ -28,10 +28,11 @@ import UpdateCategory from "./components/Admin/Categories/UpdateCategory";
 import ThanksForOrdering from "./components/Users/Products/ThanksForOrdering.js";
 import OrdersList from "./components/Admin/Orders/OdersList";
 import ManageOrders from "./components/Admin/Orders/ManageOrders";
-import Customers from "./components/Admin/Orders/Customers";
+import Customers from "./components/Admin/Customers/Customers";
 import BrandsColorsList from "./components/Admin/Categories/BrandsColorsList";
 import AuthRoute from "./components/AuthRoute/AuthRoute.js";
 import AdminRoute from "./components/AuthRoute/AdminRoute.js";
+import UpdateOrders from "./components/Admin/Orders/UpdateOrders.js";
 
 const App = () => {
   return (
@@ -66,6 +67,7 @@ const App = () => {
           <Route path="all-colors" element={<BrandsColorsList />} />
         {/* Orders */}
           <Route path="manage-orders" element={<ManageOrders />} />
+          <Route path="orders/:id" element={<UpdateOrders />} />
           <Route path="order-payment" element={<OrderPayment />} />
           <Route path="customers" element={<Customers />} />
         </Route>

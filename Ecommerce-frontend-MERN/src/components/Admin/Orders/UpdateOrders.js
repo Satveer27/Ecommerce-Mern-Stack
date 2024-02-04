@@ -1,17 +1,34 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
+import { updatedOrderAction } from "../../../redux/slices/orders/orderSlices";
+import { useParams } from "react-router-dom";
+import SuccessMsg from "../../SuccessMsg/SuccessMsg";
 
-const UpdateOrders = ({ id }) => {
+const UpdateOrders = () => {
+  const {id} = useParams();
+  const dispatch = useDispatch();
   const [order, setOrder] = React.useState({
     status: "pending",
   });
 
-  const onChange = (e) => {};
+  const onChange = (e) => {
+    dispatch(updatedOrderAction({status:e.target.value, id}))
+  };
+
+  const {isUpdated, error , loading} = useSelector(state=>state.order)
 
   return (
+  <>
+    {isUpdated && <SuccessMsg message="Order updated Successfully" />}
+    {error && <ErrorMsg message={error.message} />}
+    
     <div className="mt-6 flex items-center space-x-4 divide-x divide-gray-200 border-t border-gray-200 pt-4 text-sm font-medium sm:mt-0 sm:ml-4 sm:border-none sm:pt-0">
       <div className="flex flex-1 justify-center">
-        <div>
+      {loading ? <LoadingComponent/> :
+      <div>
           <label
             htmlFor="location"
             className="block text-sm font-medium text-gray-700">
@@ -30,8 +47,12 @@ const UpdateOrders = ({ id }) => {
             <option value="delivered">Delivered</option>
           </select>
         </div>
+      
+      }
+        
       </div>
     </div>
+    </>
   );
 };
 

@@ -10,12 +10,12 @@ const initialState = {
     order:null,
     loading:false,
     error: null,
-    //optional
     isAdded: false,
     isUpdated: false,
+    stats:null,
 }
 
-//create product
+//create order
 export const placeOrderAction = createAsyncThunk('order/placeOrder', async(payload, {rejectWithValue, getState, dispatch})=>{
     try{
         const {orderItems, shippingAddress, totalPrice} = 
@@ -42,7 +42,27 @@ export const placeOrderAction = createAsyncThunk('order/placeOrder', async(paylo
     }
 })
 
-//fetch product
+//fetch order stats
+export const fetchOrderStatsAction = createAsyncThunk('order/stats', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        //Token-authenticated
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`,
+            }
+        }
+        
+        //make http req
+        const response = await axios.get(`${baseURL}/order/sales/sum`, config)
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
+//get all order
 export const fetchOrderAction = createAsyncThunk('order/list', async(payload, {rejectWithValue, getState, dispatch})=>{
     try{
         //Token-authenticated
@@ -61,6 +81,34 @@ export const fetchOrderAction = createAsyncThunk('order/list', async(payload, {r
         return rejectWithValue(e?.response?.data);
     }
 })
+
+//update order
+export const updatedOrderAction = createAsyncThunk('order/updateOrder', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        const {status, id} = 
+        payload;
+    
+        //Token-authenticated
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`,
+            }
+        }
+        
+    
+        //make http req
+        const response = await axios.put(`${baseURL}/order/update/${id}`, 
+            {status}
+        , config)
+        
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
 
 //fetch single order
 export const fetchSingleOrder = createAsyncThunk('order/details', async(orderId, {rejectWithValue, getState, dispatch})=>{
@@ -101,6 +149,36 @@ const orderSlice = createSlice({
             state.order = null;
         });
 
+        //update order
+        builder.addCase(updatedOrderAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(updatedOrderAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.order = action.payload;
+            state.isUpdated = true;
+        });
+        builder.addCase(updatedOrderAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.order = null;
+            state.isUpdated = false;
+        });
+
+        //fetch order stats
+        builder.addCase(fetchOrderStatsAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(fetchOrderStatsAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.stats = action.payload;
+        });
+        builder.addCase(fetchOrderStatsAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.stats = null;
+        });
+
         //fetch orders
         builder.addCase(fetchOrderAction.pending, (state, action)=>{
             state.loading = true;
@@ -126,7 +204,8 @@ const orderSlice = createSlice({
         });
         //reset success
         builder.addCase(resetSuccessAction.pending, (state, action)=>{
-            state.isAdded = false
+            state.isAdded = false;
+            state.isUpdated = false;
         })
          //reset error
          builder.addCase(resetErrAction.pending, (state, action)=>{

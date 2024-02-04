@@ -61,6 +61,51 @@ export const createProductAction = createAsyncThunk('products/createProduct', as
     }
 })
 
+//update product
+export const updateProductAction = createAsyncThunk('products/updateProduct', async(payload, {rejectWithValue, getState, dispatch})=>{
+    try{
+        const {name, description, category, brand, color, price, files, totalQuantity, id} = 
+        payload;
+    
+        //Token-authenticated
+        const token = getState()?.users?.userAuth?.userInfo?.token;
+        const config = {
+            headers:{
+                Authorization : `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            }
+        }
+        console.log(name, description, category, brand, color, price, files, totalQuantity);
+        //FormData
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("description", description);
+        formData.append("category", category);
+        formData.append("brand", brand);
+        formData.append("price", price);
+        formData.append("totalQuantity", totalQuantity);
+
+        color.forEach((color) => {
+            formData.append("color", color);
+        });
+
+        files.forEach((file) => {
+            formData.append("files", file);
+        });
+            
+        //make http req
+        const response = await axios.put(`${baseURL}/products/${id}/update`, 
+            formData
+        , config)
+        
+
+        return response.data;
+    }catch(e){
+    
+        return rejectWithValue(e?.response?.data);
+    }
+})
+
 //fetch product
 export const fetchProductAction = createAsyncThunk('products/list', async({url}, {rejectWithValue, getState, dispatch})=>{
     try{
@@ -107,6 +152,22 @@ const productSlice = createSlice({
             state.product = null;
         });
 
+        //update product
+        builder.addCase(updateProductAction.pending, (state, action)=>{
+            state.loading = true;
+        });
+        builder.addCase(updateProductAction.fulfilled, (state, action)=>{
+            state.loading = false;
+            state.product = action.payload;
+            state.isUpdated = true;
+        });
+        builder.addCase(updateProductAction.rejected, (state, action)=>{
+            state.loading = false;
+            state.error = action.payload;
+            state.product = null;
+            state.isUpdated = false;
+        });
+
         //fetch products
         builder.addCase(fetchProductAction.pending, (state, action)=>{
             state.loading = true;
@@ -132,11 +193,12 @@ const productSlice = createSlice({
         });
         //reset success
         builder.addCase(resetSuccessAction.pending, (state, action)=>{
-            state.isAdded = false
+            state.isAdded = false;
+            state.isUpdated = false;
         })
          //reset error
          builder.addCase(resetErrAction.pending, (state, action)=>{
-            state.error = null
+            state.error = null;
         })
         builder.addCase(createProductAction.rejected, (state, action)=>{
             state.loading = false;

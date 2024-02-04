@@ -2,11 +2,25 @@ import { Link } from "react-router-dom";
 import ErrorMsg from "../../ErrorMsg/ErrorMsg";
 import LoadingComponent from "../../LoadingComp/LoadingComponent";
 import NoDataFound from "../../NoDataFound/NoDataFound";
+import {useDispatch, useSelector} from 'react-redux';
+import { useEffect } from "react";
+import { fetchProductAction } from "../../../redux/slices/product/productSlices";
+import baseURL from "../../../utils/baseURL";
 
 export default function ManageStocks() {
+  //dispatch
+  const dispatch = useDispatch();
   //Selector
-  let products, loading, error;
+  let products;
+  let productURL = `${baseURL}/products/allProducts`
 
+  useEffect(()=>{
+    dispatch(fetchProductAction({
+       url: productURL
+    }))
+  },[dispatch])
+
+  const {allProducts, loading, error} = useSelector(state=>state?.products)
   //delete product handler
   const deleteProductHandler = (id) => {};
   return (
@@ -14,7 +28,7 @@ export default function ManageStocks() {
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
           <h1 className="text-xl font-semibold text-gray-900">
-            Product List- [{products?.length}]{" "}
+            Product List- [{allProducts?.data?.length}]{" "}
           </h1>
           <p className="mt-2 text-sm text-gray-700">
             List of all the products in your account including their name,
@@ -34,7 +48,7 @@ export default function ManageStocks() {
         <LoadingComponent />
       ) : error ? (
         <ErrorMsg message={error?.message} />
-      ) : products?.length <= 0 ? (
+      ) : allProducts?.data?.length <= 0 ? (
         <NoDataFound />
       ) : (
         <div className="mt-8 flex flex-col">
@@ -89,14 +103,14 @@ export default function ManageStocks() {
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
                     {/* loop here */}
-                    {products?.map((product) => (
+                    {allProducts?.data?.map((product) => (
                       <tr key={product._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                           <div className="flex items-center">
                             <div className="h-10 w-10 flex-shrink-0">
                               <img
                                 className="h-10 w-10 rounded-full"
-                                src={product?.image}
+                                src={product?.images[0]}
                                 alt={product?.name}
                               />
                             </div>
@@ -115,11 +129,11 @@ export default function ManageStocks() {
                             {product?.category}
                           </div>
                           <div className="text-gray-500">
-                            {product.department}
+                            {product?.department}
                           </div>
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {product?.isOutOfStock ? (
+                          {product?.qtyLeft <= 0 ? (
                             <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
                               Out of Stock
                             </span>
@@ -130,7 +144,7 @@ export default function ManageStocks() {
                           )}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                          {product?.totalQty}
+                          {product?.totalQuantity}
                         </td>
 
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">

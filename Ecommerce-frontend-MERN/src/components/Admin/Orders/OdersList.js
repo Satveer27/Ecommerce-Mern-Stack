@@ -1,17 +1,23 @@
+import { useDispatch, useSelector } from "react-redux";
 import OrdersStats from "./OrdersStatistics";
-
-const people = [
-  {
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  // More people...
-];
+import { useEffect } from "react";
+import { fetchOrderAction } from "../../../redux/slices/orders/orderSlices";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
+import NoDataFound from "../../NoDataFound/NoDataFound";
+import { Link } from "react-router-dom";
 
 export default function OrdersList() {
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchOrderAction())
+  },[dispatch])
+
+  const {error, loading, allOrders} = useSelector(state=>state?.order);
   return (
+  <>
+  {error && <ErrorMsg message={error.message}/>}
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center"></div>
       {/* order stats */}
@@ -32,12 +38,12 @@ export default function OrdersList() {
               <th
                 scope="col"
                 className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell">
-                Payment Method
+                Payment Status
               </th>
               <th
                 scope="col"
                 className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell">
-                Oder Date
+                Order Date
               </th>
               <th
                 scope="col"
@@ -60,41 +66,49 @@ export default function OrdersList() {
               </th> */}
             </tr>
           </thead>
+          {loading ? <LoadingComponent/> : allOrders?.order?.length <=0 ? <NoDataFound/>:  
           <tbody className="divide-y divide-gray-200 bg-white">
-            {people.map((person) => (
-              <tr key={person.email}>
+            {allOrders?.order?.map((order) => (
+              <tr key={order._id}>
                 <td className="w-full max-w-0 py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:w-auto sm:max-w-none sm:pl-6">
-                  {person.name}
-                  <dl className="font-normal lg:hidden">
-                    <dt className="sr-only">Title</dt>
-                    <dd className="mt-1 truncate text-gray-700">
-                      {person.title}
-                    </dd>
-                    <dt className="sr-only sm:hidden">Email</dt>
-                    <dd className="mt-1 truncate text-gray-500 sm:hidden">
-                      {person.email}
-                    </dd>
-                  </dl>
+                  {order.orderNumber}
                 </td>
                 <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
-                  {person.title}
+                {order.paymentStatus === 'Not paid'? <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">{order?.paymentStatus}</span>
+                : <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{order?.paymentStatus}</span>
+                
+                }
+                </td>
+                <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                {new Date(order.createdAt).toLocaleDateString()}
+                </td>
+                <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
+                  Not specified
                 </td>
                 <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
-                  {person.email}
+                  {order.status}
                 </td>
                 <td className="px-3 py-4 text-sm text-gray-500">
-                  {person.role}
+                  {order.totalPrice}
                 </td>
                 <td className="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                  <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                    Edit<span className="sr-only">, {person.name}</span>
-                  </a>
+                {order.paymentStatus === 'Not paid' ? 
+                <Link style={{cursor: 'not-allowed'}} className="text-gray-600 hover:text-indigo-900">
+                    Edit
+                  </Link>
+
+                : <Link to={`/admin/orders/${order?._id}`} className="text-indigo-600 hover:text-indigo-900">
+                    Edit
+                  </Link>}
+                  
                 </td>
               </tr>
             ))}
           </tbody>
+        }
         </table>
       </div>
     </div>
+    </>
   );
 }

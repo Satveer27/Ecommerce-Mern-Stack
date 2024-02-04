@@ -1,11 +1,21 @@
+import { useEffect } from "react";
+import { getUserProfileAction } from "../../../redux/slices/user/userSlice";
 import CustomerDetails from "./CustomerDetails";
 import ShippingAddressDetails from "./ShippingAddressDetails";
+import {useDispatch, useSelector} from 'react-redux';
 
 export default function CustomerProfile() {
-  let profile;
-  let loading;
-  let error;
-  let orders = [];
+
+  //dispatch
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(getUserProfileAction())
+  },[dispatch])
+
+  const {profile, loading, error} = useSelector(state=>state?.users)
+
+  //get orders
+  const orders = profile?.user?.orders
 
   return (
     <>
@@ -15,7 +25,7 @@ export default function CustomerProfile() {
           <CustomerDetails
             email={profile?.user?.email}
             dateJoined={new Date(profile?.user?.createdAt).toDateString()}
-            fullName={profile?.user?.fullname}
+            fullName={profile?.user?.username}
           />
         </div>
         <div className="w-full md:w-1/3 px-3 mb-3 md:mb-0" />
@@ -97,8 +107,8 @@ export default function CustomerProfile() {
                             <div className="sm:flex lg:col-span-7">
                               <div className="aspect-w-1 aspect-h-1 w-full flex-shrink-0 overflow-hidden rounded-lg sm:aspect-none sm:h-40 sm:w-40">
                                 <img
-                                  src={product.imageSrc}
-                                  alt={product.imageAlt}
+                                  src={product.image}
+                                  alt={product.image}
                                   className="h-full w-full object-cover object-center sm:h-full sm:w-full"
                                 />
                               </div>

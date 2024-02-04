@@ -28,7 +28,7 @@ const HomeProductTrending = () => {
               Trending Products
             </h2>
             <a
-              href="#"
+              href="/products-filters"
               className="hidden text-sm font-medium text-indigo-600 hover:text-indigo-500 md:block">
               Shop the collection
               <span aria-hidden="true"> &rarr;</span>

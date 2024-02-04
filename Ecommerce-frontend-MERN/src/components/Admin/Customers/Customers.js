@@ -1,19 +1,32 @@
-const people = [
-  {
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-    role: "Member",
-  },
-  // More people...
-];
+import { useEffect } from "react";
+import { fetchOrderAction } from "../../../redux/slices/orders/orderSlices";
+import LoadingComponent from "../../LoadingComp/LoadingComponent";
+import ErrorMsg from "../../ErrorMsg/ErrorMsg";
+import {useDispatch, useSelector} from 'react-redux';
+import NoDataFound from "../../NoDataFound/NoDataFound";
+
 
 export default function Customers() {
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchOrderAction())
+  },[dispatch])
+
+  const {loading, error, allOrders} = useSelector(state=>state?.order)
+  const customers = allOrders?.order;
+
+  //remove duplicates
+  const uniqueCustomers = customers?.filter((item,idx)=>{
+    return customers?.map((customer)=>customer?.id).indexOf(item.id) === idx
+  })
+
   return (
+  <>
+  {error && <ErrorMsg message={error.message}/>}
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-xl font-semibold text-gray-900">All Customers</h1>
+          <h1 className="text-xl font-semibold text-gray-900">All Customers[{uniqueCustomers?.length}]</h1>
           <p className="mt-2 text-sm text-gray-700">
             A list of all the users in your account including their name, title,
             email and role.
@@ -37,12 +50,7 @@ export default function Customers() {
                     <th
                       scope="col"
                       className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6 lg:pl-8">
-                      Name
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Title
+                      UserName
                     </th>
                     <th
                       scope="col"
@@ -52,7 +60,22 @@ export default function Customers() {
                     <th
                       scope="col"
                       className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                      Role
+                      Country
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      City
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Postcode
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Phone number
                     </th>
                     <th
                       scope="col"
@@ -61,30 +84,41 @@ export default function Customers() {
                     </th>
                   </tr>
                 </thead>
+                
                 <tbody className="divide-y divide-gray-200 bg-white">
-                  {people.map((person) => (
-                    <tr key={person.email}>
+                {loading ? <LoadingComponent/> : uniqueCustomers?.length<=0?<NoDataFound/>:
+                uniqueCustomers?.map((person) => (
+                    <tr key={person?.user?.username}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8">
-                        {person.name}
+                        {person?.user?.username}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.title}
+                        {person?.user?.email}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.email}
+                        {person?.user?.shippingAddress?.country}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                        {person.role}
+                        {person?.user?.shippingAddress?.city}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {person?.user?.shippingAddress?.postalCode}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {person?.user?.shippingAddress?.phone}
                       </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8">
                         <a
                           href="#"
                           className="text-indigo-600 hover:text-indigo-900">
-                          Edit<span className="sr-only">, {person.name}</span>
+                          Edit
                         </a>
                       </td>
                     </tr>
-                  ))}
+                  ))
+              
+                }
+                  
                 </tbody>
               </table>
             </div>
@@ -92,5 +126,6 @@ export default function Customers() {
         </div>
       </div>
     </div>
+    </>  
   );
 }
